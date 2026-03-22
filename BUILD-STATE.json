@@ -1,0 +1,65 @@
+{
+  "projectName": "nudge Notes iOS",
+  "version": "0.1.0",
+  "buildNumber": 1,
+  "phase": "0-infrastructure",
+  "lastUpdated": "2026-03-22T22:04:00Z",
+  "completedTasks": [
+    "Name research",
+    "GitHub repo created: https://github.com/1digitalD/nudge-notes-ios",
+    "Todoist project created: 6gF2mp9R794C9xfc",
+    "All tasks added to Todoist (60+ tasks across 9 phases)"
+  ],
+  "currentTask": "Initialize Xcode project with SwiftUI + SwiftData",
+  "blockers": [],
+  "nextSteps": [
+    "Initialize Xcode project",
+    "Set up testing framework",
+    "Create data models",
+    "Build onboarding flow"
+  ],
+  "metadata": {
+    "githubRepo": "https://github.com/1digitalD/nudge-notes-ios",
+    "todoistProjectId": "6gF2mp9R794C9xfc",
+    "todoistUrl": "https://todoist.app/project/6gF2mp9R794C9xfc",
+    "codexSession": null,
+    "testsPassing": false,
+    "testsRun": 0,
+    "testsFailed": 0
+  },
+  "techStack": {
+    "framework": "SwiftUI",
+    "minIOSVersion": "17.0",
+    "persistence": "SwiftData",
+    "iap": "StoreKit 2",
+    "testing": "XCTest + XCTestUI",
+    "charts": "Swift Charts"
+  },
+  "appConfig": {
+    "name": "nudge Notes",
+    "subtitle": "WHR & Habit Tracker",
+    "bundleId": "com.henkanhacks.nudgenotes",
+    "pricing": {
+      "free": "Basic tracking",
+      "pro_monthly": "$4.99/month",
+      "pro_yearly": "$39.99/year"
+    }
+  },
+  "phases": {
+    "0-infrastructure": {
+      "status": "in-progress",
+      "progress": 60,
+      "tasks": ["GitHub repo ✅", "Todoist setup ✅", "Xcode init pending"]
+    },
+    "1-testing-framework": {"status": "not-started", "progress": 0},
+    "2-data-models": {"status": "not-started", "progress": 0},
+    "3-onboarding": {"status": "not-started", "progress": 0},
+    "4-core-tracking": {"status": "not-started", "progress": 0},
+    "5-review-history": {"status": "not-started", "progress": 0},
+    "6-pro-features": {"status": "not-started", "progress": 0},
+    "7-insights": {"status": "not-started", "progress": 0},
+    "8-polish": {"status": "not-started", "progress": 0},
+    "9-testflight": {"status": "not-started", "progress": 0}
+  },
+  "recoveryNotes": "If session restarts: 1) Read this file, 2) Check Todoist for task status, 3) Pull from GitHub, 4) Resume from currentTask"
+}
