@@ -16,6 +16,6 @@ final class DailyLogTests: XCTestCase {
 
         XCTAssertNil(log.sleepHours)
         XCTAssertNil(log.movement)
-        XCTAssertEqual(log.photos?.count, 0)
+        XCTAssertEqual(log.photos.count, 0)
     }
 }

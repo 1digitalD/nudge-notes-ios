@@ -1,11 +1,15 @@
 import Foundation
+import SwiftData
 
+@Model
 final class PhotoLog {
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     var date: Date
     var category: PhotoCategory
+    @Attribute(.externalStorage)
     var imageData: Data?
     var notes: String?
+    var dailyLog: DailyLog?
 
     init(
         id: UUID = UUID(),

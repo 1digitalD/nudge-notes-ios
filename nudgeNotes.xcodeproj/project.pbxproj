@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1337F51113786AA03FF21D2A /* NudgeNotesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA2FE5A6609919E41100FDE /* NudgeNotesUITests.swift */; };
+		15941D0210EAB05EE7FEC297 /* OnboardingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABA01FD79813A0F3758C2CD /* OnboardingViewModelTests.swift */; };
+		2056FF849B09BE910E233B22 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5CEE793A702425566C5764A /* OnboardingViewModel.swift */; };
 		2191D0DD0C2AACCDF8EB1AF8 /* HabitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E330D1C6A7C4DC6A0DC35E62 /* HabitType.swift */; };
 		220F48382997C0EFC99EEE18 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090C3F1F013A8E9CE750D4DF /* ContentView.swift */; };
 		222CBF3725E8BCDC838526A6 /* UserProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774E030147A83A7ECAB27116 /* UserProfileTests.swift */; };
@@ -22,8 +24,11 @@
 		A08F5ED0DFFAAF1D8808C802 /* PhotoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D33BB9CFCE67AEA26A5C00 /* PhotoCategory.swift */; };
 		B4DD8B1762EAD81B68ABDF51 /* WHREntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB71535D0B9153B5F9F73F96 /* WHREntry.swift */; };
 		B4F48AA0437B215BD602D81D /* HabitEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549B5273387AD1C371328134 /* HabitEntry.swift */; };
+		BA062AC2C0D9F19650F3683A /* PermissionManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA818DB497AB5D1775B71A9E /* PermissionManaging.swift */; };
 		C2E73D89B81B9FF8984A148D /* PhotoLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6950CE91F5DFD069D3E572E /* PhotoLogTests.swift */; };
 		CC662EDEC3283867A0056554 /* DailyLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECE424828F750CDD8AF56C5 /* DailyLog.swift */; };
+		D76F76411C5D293DC10D389D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA7A8241E2745B86870E7C9 /* HomeView.swift */; };
+		D7CB4E0C995BEE44E1C27CD3 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F7EAF2DA8442C32A660B59 /* OnboardingFlowView.swift */; };
 		F0851738A25EB0DDB824677E /* nudgeNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE383BB8A2CFA9778B95F767 /* nudgeNotesApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -54,7 +59,10 @@
 		549B5273387AD1C371328134 /* HabitEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEntry.swift; sourceTree = "<group>"; };
 		597080A63141BADF0EDD2EC9 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		5AA2FE5A6609919E41100FDE /* NudgeNotesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeNotesUITests.swift; sourceTree = "<group>"; };
+		5ABA01FD79813A0F3758C2CD /* OnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModelTests.swift; sourceTree = "<group>"; };
+		64F7EAF2DA8442C32A660B59 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		6978D4BD191EF03BCF7002D9 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		6DA7A8241E2745B86870E7C9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		774E030147A83A7ECAB27116 /* UserProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileTests.swift; sourceTree = "<group>"; };
 		79FF1723CEDB63918359B484 /* nudgeNotesTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = nudgeNotesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B1C4F6F943E71E283D61A3D /* DailyLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyLogTests.swift; sourceTree = "<group>"; };
@@ -62,6 +70,7 @@
 		9767C41E111F2E0F00F80570 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		B693CED457F21D48D2F83514 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		B9D33BB9CFCE67AEA26A5C00 /* PhotoCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCategory.swift; sourceTree = "<group>"; };
+		BA818DB497AB5D1775B71A9E /* PermissionManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManaging.swift; sourceTree = "<group>"; };
 		BDBE8350587D1E7CC77E019E /* WHREntryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHREntryTests.swift; sourceTree = "<group>"; };
 		C6950CE91F5DFD069D3E572E /* PhotoLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLogTests.swift; sourceTree = "<group>"; };
 		CB71535D0B9153B5F9F73F96 /* WHREntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHREntry.swift; sourceTree = "<group>"; };
@@ -70,6 +79,7 @@
 		D5A3DDC472391F8A74A46DF2 /* PhotoLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLog.swift; sourceTree = "<group>"; };
 		DE383BB8A2CFA9778B95F767 /* nudgeNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nudgeNotesApp.swift; sourceTree = "<group>"; };
 		E330D1C6A7C4DC6A0DC35E62 /* HabitType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitType.swift; sourceTree = "<group>"; };
+		E5CEE793A702425566C5764A /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		E89C10E090846B406E5E59D8 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		EEDAE0100B4F5AC9B6C7FBA4 /* HabitEntryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEntryTests.swift; sourceTree = "<group>"; };
 		FD9F1A4AE67A15A4E5AB91F6 /* TestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFixtures.swift; sourceTree = "<group>"; };
@@ -80,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				597080A63141BADF0EDD2EC9 /* .gitkeep */,
+				5ABA01FD79813A0F3758C2CD /* OnboardingViewModelTests.swift */,
 			);
 			name = ViewModelTests;
 			path = Tests/ViewModelTests;
@@ -89,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				E89C10E090846B406E5E59D8 /* .gitkeep */,
+				E5CEE793A702425566C5764A /* OnboardingViewModel.swift */,
 			);
 			name = ViewModels;
 			path = nudgeNotes/ViewModels;
@@ -98,6 +110,8 @@
 			isa = PBXGroup;
 			children = (
 				090C3F1F013A8E9CE750D4DF /* ContentView.swift */,
+				6DA7A8241E2745B86870E7C9 /* HomeView.swift */,
+				64F7EAF2DA8442C32A660B59 /* OnboardingFlowView.swift */,
 			);
 			name = Views;
 			path = nudgeNotes/Views;
@@ -193,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				D599C5FF16145F7940C20A2D /* .gitkeep */,
+				BA818DB497AB5D1775B71A9E /* PermissionManaging.swift */,
 			);
 			name = Services;
 			path = nudgeNotes/Services;
@@ -304,6 +319,7 @@
 			files = (
 				8FB2CCF29639FE42A870DA52 /* DailyLogTests.swift in Sources */,
 				6DE687231E567F71B720701C /* HabitEntryTests.swift in Sources */,
+				15941D0210EAB05EE7FEC297 /* OnboardingViewModelTests.swift in Sources */,
 				C2E73D89B81B9FF8984A148D /* PhotoLogTests.swift in Sources */,
 				57C2E0E5F6B725722BBBD0BD /* TestFixtures.swift in Sources */,
 				222CBF3725E8BCDC838526A6 /* UserProfileTests.swift in Sources */,
@@ -319,6 +335,10 @@
 				CC662EDEC3283867A0056554 /* DailyLog.swift in Sources */,
 				B4F48AA0437B215BD602D81D /* HabitEntry.swift in Sources */,
 				2191D0DD0C2AACCDF8EB1AF8 /* HabitType.swift in Sources */,
+				D76F76411C5D293DC10D389D /* HomeView.swift in Sources */,
+				D7CB4E0C995BEE44E1C27CD3 /* OnboardingFlowView.swift in Sources */,
+				2056FF849B09BE910E233B22 /* OnboardingViewModel.swift in Sources */,
+				BA062AC2C0D9F19650F3683A /* PermissionManaging.swift in Sources */,
 				4BC9E652D1271FAA8EBF429F /* PersistenceController.swift in Sources */,
 				A08F5ED0DFFAAF1D8808C802 /* PhotoCategory.swift in Sources */,
 				8D41D0604A046CC7034BD643 /* PhotoLog.swift in Sources */,
@@ -463,6 +483,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "nudge Notes";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "nudge Notes saves optional progress photos to your library when you choose to export them.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "nudge Notes uses your photos for optional meal, activity, and body logs that stay on your device.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "nudge Notes uses gentle reminders for check-ins only if you enable them.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -569,6 +592,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "nudge Notes";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "nudge Notes saves optional progress photos to your library when you choose to export them.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "nudge Notes uses your photos for optional meal, activity, and body logs that stay on your device.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "nudge Notes uses gentle reminders for check-ins only if you enable them.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

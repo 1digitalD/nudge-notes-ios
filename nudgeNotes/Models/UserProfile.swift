@@ -1,7 +1,9 @@
 import Foundation
+import SwiftData
 
+@Model
 final class UserProfile {
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     var onboardingCompleted: Bool
     var isPro: Bool
     var createdAt: Date

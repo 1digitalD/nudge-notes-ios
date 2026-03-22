@@ -1,7 +1,9 @@
 import Foundation
+import SwiftData
 
+@Model
 final class HabitEntry {
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     var name: String
     var type: HabitType
     var value: Double?

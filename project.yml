@@ -25,6 +25,9 @@ targets:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
         INFOPLIST_KEY_UILaunchScreen_Generation: true
+        INFOPLIST_KEY_NSPhotoLibraryUsageDescription: nudge Notes uses your photos for optional meal, activity, and body logs that stay on your device.
+        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: nudge Notes saves optional progress photos to your library when you choose to export them.
+        INFOPLIST_KEY_NSUserNotificationsUsageDescription: nudge Notes uses gentle reminders for check-ins only if you enable them.
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         SWIFT_VERSION: 5.0
         SUPPORTS_MACCATALYST: false

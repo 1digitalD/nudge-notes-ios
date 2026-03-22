@@ -2,8 +2,8 @@
   "projectName": "nudge Notes iOS",
   "version": "0.1.0",
   "buildNumber": 1,
-  "phase": "2-data-models",
-  "lastUpdated": "2026-03-22T22:16:16Z",
+  "phase": "3-onboarding",
+  "lastUpdated": "2026-03-22T23:01:30Z",
   "completedTasks": [
     "Name research",
     "GitHub repo created: https://github.com/1digitalD/nudge-notes-ios",
@@ -11,29 +11,29 @@
     "All tasks added to Todoist (60+ tasks across 9 phases)",
     "Phase 0 scaffold generated locally",
     "Phase 1 fixtures and failing tests added",
-    "Phase 2 model layer implemented with compile-green test bundle"
+    "Phase 2 model layer implemented with compile-green test bundle",
+    "SwiftData model layer activated with persistent ModelContainer",
+    "Phase 3 onboarding flow implemented with persistence and permission mocks",
+    "Onboarding unit tests and UI relaunch test passing"
   ],
-  "currentTask": "Codex building Phase 3: onboarding flow",
-  "blockers": [
-    "Network access is unavailable in this environment, so GitHub push and Todoist task completion cannot be performed from the sandbox.",
-    "The .git directory is not writable in this environment, so local commits cannot be created from this session.",
-    "CoreSimulator is unavailable in this environment; simulator-based test execution must be deferred even though build-for-testing succeeds.",
-    "SwiftData macro expansion is blocked by the sandbox, so the current model layer uses plain Swift classes instead of @Model-backed persistence."
-  ],
+  "currentTask": "Codex building Phase 4: core tracking features",
+  "blockers": [],
   "nextSteps": [
-    "Codex: Build onboarding screens and flow state",
-    "Codex: Add UI tests for onboarding compile path",
-    "Codex: Build core tracking tabs and forms",
-    "Codex: Revisit persistence once macro-capable environment is available"
+    "Codex: Add test-first home dashboard, daily check-in, WHR calculator, and photo logging",
+    "Codex: Expand post-onboarding navigation into tab-based core tracking",
+    "Codex: Verify persistence for daily logs, WHR entries, and photos",
+    "Codex: Commit, push, and mark Phase 4 Todoist items complete"
   ],
   "metadata": {
     "githubRepo": "https://github.com/1digitalD/nudge-notes-ios",
     "todoistProjectId": "6gF2mp9R794C9xfc",
     "todoistUrl": "https://todoist.app/project/6gF2mp9R794C9xfc",
-    "codexSession": "clear-meadow",
-    "codexStartedAt": "2026-03-22T22:08:54Z",
+    "codexSession": "grand-otter",
+    "codexPreviousSession": "clear-meadow (sandboxed, completed Phase 0-2)",
+    "codexStartedAt": "2026-03-22T22:51:31Z",
+    "codexMode": "yolo (unrestricted)",
     "testsPassing": true,
-    "testsRun": 1,
+    "testsRun": 3,
     "testsFailed": 0
   },
   "techStack": {
@@ -68,7 +68,7 @@
     },
     "1-testing-framework": {"status": "completed", "progress": 100},
     "2-data-models": {"status": "completed", "progress": 100},
-    "3-onboarding": {"status": "in-progress", "progress": 0},
+    "3-onboarding": {"status": "completed", "progress": 100},
     "4-core-tracking": {"status": "not-started", "progress": 0},
     "5-review-history": {"status": "not-started", "progress": 0},
     "6-pro-features": {"status": "not-started", "progress": 0},

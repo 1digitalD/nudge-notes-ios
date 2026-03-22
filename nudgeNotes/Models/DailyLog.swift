@@ -1,7 +1,9 @@
 import Foundation
+import SwiftData
 
+@Model
 final class DailyLog {
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     var date: Date
     var sleepHours: Double?
     var sleepQuality: Int?
@@ -13,7 +15,8 @@ final class DailyLog {
     var mood: Int?
     var stress: Int?
     var notes: String?
-    var photos: [PhotoLog]?
+    @Relationship(deleteRule: .cascade, inverse: \PhotoLog.dailyLog)
+    var photos: [PhotoLog]
 
     init(
         id: UUID = UUID(),
@@ -28,7 +31,7 @@ final class DailyLog {
         mood: Int? = nil,
         stress: Int? = nil,
         notes: String? = nil,
-        photos: [PhotoLog]? = []
+        photos: [PhotoLog] = []
     ) {
         self.id = id
         self.date = date
@@ -43,5 +46,6 @@ final class DailyLog {
         self.stress = stress
         self.notes = notes
         self.photos = photos
+        self.photos.forEach { $0.dailyLog = self }
     }
 }

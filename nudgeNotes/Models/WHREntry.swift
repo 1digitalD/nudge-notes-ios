@@ -1,7 +1,9 @@
 import Foundation
+import SwiftData
 
+@Model
 final class WHREntry {
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     var date: Date
     var waist: Double
     var hip: Double
