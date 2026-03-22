@@ -2,8 +2,8 @@
   "projectName": "nudge Notes iOS",
   "version": "0.1.0",
   "buildNumber": 1,
-  "phase": "5-review-history",
-  "lastUpdated": "2026-03-22T23:30:00Z",
+  "phase": "9-testflight",
+  "lastUpdated": "2026-03-22T23:55:36Z",
   "completedTasks": [
     "Name research",
     "GitHub repo created: https://github.com/1digitalD/nudge-notes-ios",
@@ -17,15 +17,19 @@
     "Onboarding unit tests and UI relaunch test passing",
     "Phase 4 home dashboard, daily check-in, WHR calculator, and tab shell implemented",
     "Core tracking unit tests and UI flow passing",
-    "Phase 5 review & history features complete (monthly review, calendar heatmap, searchable history, edit/delete, CSV export)"
+    "Phase 5 review & history features complete (monthly review, calendar heatmap, searchable history, edit/delete, CSV export)",
+    "Phase 6 Pro features complete (StoreKit 2 service seam, Pro upgrade modal, restore purchases, CSV export gating, local StoreKit config)",
+    "Phase 7 insights complete (Swift Charts trend line, weekly summaries, pattern detection, gentle nudges)",
+    "Phase 8 polish complete (app icon set, launch screen, dark mode cleanup, accessibility labels, Dynamic Type tuning)",
+    "Phase 9 TestFlight prep complete (code signing notes, App Store Connect notes, privacy draft, screenshots guide, beta instructions)"
   ],
-  "currentTask": "Ready for Phase 6-9 (Pro features, Insights, Polish, TestFlight)",
+  "currentTask": "MVP complete and ready for TestFlight setup",
   "blockers": [],
   "nextSteps": [
-    "Codex: Add test-first monthly review, history list, and calendar views",
-    "Codex: Implement edit/delete flows and CSV export gating",
-    "Codex: Verify history persistence and search behavior",
-    "Codex: Commit, push, and mark Phase 5 Todoist items complete"
+    "Create the App Store Connect subscription products with the matching identifiers",
+    "Archive a release build and upload the first TestFlight candidate",
+    "Host the privacy policy draft at a public URL",
+    "Mark Todoist tasks complete if a Todoist credential is made available"
   ],
   "metadata": {
     "githubRepo": "https://github.com/1digitalD/nudge-notes-ios",
@@ -36,7 +40,7 @@
     "codexStartedAt": "2026-03-22T22:51:31Z",
     "codexMode": "yolo (unrestricted)",
     "testsPassing": true,
-    "testsRun": 5,
+    "testsRun": 34,
     "testsFailed": 0
   },
   "techStack": {
@@ -74,10 +78,10 @@
     "3-onboarding": {"status": "completed", "progress": 100},
     "4-core-tracking": {"status": "completed", "progress": 100},
     "5-review-history": {"status": "completed", "progress": 100},
-    "6-pro-features": {"status": "not-started", "progress": 0},
-    "7-insights": {"status": "not-started", "progress": 0},
-    "8-polish": {"status": "not-started", "progress": 0},
-    "9-testflight": {"status": "not-started", "progress": 0}
+    "6-pro-features": {"status": "completed", "progress": 100},
+    "7-insights": {"status": "completed", "progress": 100},
+    "8-polish": {"status": "completed", "progress": 100},
+    "9-testflight": {"status": "completed", "progress": 100}
   },
   "recoveryNotes": "If session restarts: 1) Read this file, 2) Check Todoist for task status, 3) Pull from GitHub, 4) Resume from currentTask"
 }
