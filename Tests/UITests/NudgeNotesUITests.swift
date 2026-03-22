@@ -72,4 +72,41 @@ final class NudgeNotesUITests: XCTestCase {
 
         XCTAssertEqual(app.staticTexts["current-whr-value"].label, "0.89")
     }
+
+    func testHistoryFlowSupportsSearchAndDelete() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-reset-store", "-ui-testing-seed-onboarded"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["home-title"].waitForExistence(timeout: 2))
+        app.buttons["check-in-button"].tap()
+
+        let sleepField = app.textFields["sleep-hours-field"]
+        sleepField.tap()
+        sleepField.typeText("8")
+
+        app.swipeUp()
+        let notesField = app.textFields["notes-field"]
+        notesField.tap()
+        notesField.typeText("Evening stretch")
+
+        app.buttons["save-check-in-button"].tap()
+
+        app.tabBars.buttons["History"].tap()
+        XCTAssertTrue(app.navigationBars["History"].waitForExistence(timeout: 2))
+
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 2))
+        searchField.tap()
+        searchField.typeText("stretch")
+
+        let historyCell = app.buttons["history-log-cell-Evening stretch"]
+        XCTAssertTrue(historyCell.waitForExistence(timeout: 2))
+        app.keyboards.buttons["search"].tap()
+        historyCell.swipeLeft()
+        app.buttons["Delete"].tap()
+        app.alerts.buttons["Delete Log"].tap()
+
+        XCTAssertFalse(historyCell.waitForExistence(timeout: 1))
+    }
 }

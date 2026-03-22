@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1337F51113786AA03FF21D2A /* NudgeNotesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA2FE5A6609919E41100FDE /* NudgeNotesUITests.swift */; };
 		15941D0210EAB05EE7FEC297 /* OnboardingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABA01FD79813A0F3758C2CD /* OnboardingViewModelTests.swift */; };
+		1C0A62B0E9EEBDA41A0FACEF /* HistoryFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E56799E051E5CEF921DC3F2C /* HistoryFeaturesTests.swift */; };
 		2056FF849B09BE910E233B22 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5CEE793A702425566C5764A /* OnboardingViewModel.swift */; };
 		2191D0DD0C2AACCDF8EB1AF8 /* HabitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E330D1C6A7C4DC6A0DC35E62 /* HabitType.swift */; };
 		220F48382997C0EFC99EEE18 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090C3F1F013A8E9CE750D4DF /* ContentView.swift */; };
@@ -16,6 +17,7 @@
 		2C0253F5498D58F8B3B1AC16 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D5D2EE4788AC947F99F27 /* HomeViewModel.swift */; };
 		4377297E01BE236400E9C6BD /* WHRCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288D46A6F285905512F0DE95 /* WHRCalculatorView.swift */; };
 		4BC9E652D1271FAA8EBF429F /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B693CED457F21D48D2F83514 /* PersistenceController.swift */; };
+		54A2363A9CB10F2DB0303A69 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB870B6464FDC430B028BF /* HistoryViewModel.swift */; };
 		55E8D10A9795485D94315132 /* WHRCalculatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9008F717084C2019155C01 /* WHRCalculatorViewModel.swift */; };
 		57C2E0E5F6B725722BBBD0BD /* TestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9F1A4AE67A15A4E5AB91F6 /* TestFixtures.swift */; };
 		599E69231E599F5104EF8058 /* CoreTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA4DE2C921B88B6FF17177 /* CoreTrackingViewModelTests.swift */; };
@@ -24,6 +26,7 @@
 		6C65DC6C837703F1A1908508 /* WHREntryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBE8350587D1E7CC77E019E /* WHREntryTests.swift */; };
 		6DE687231E567F71B720701C /* HabitEntryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDAE0100B4F5AC9B6C7FBA4 /* HabitEntryTests.swift */; };
 		8D41D0604A046CC7034BD643 /* PhotoLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3DDC472391F8A74A46DF2 /* PhotoLog.swift */; };
+		8D46761A7F929D0DD2CFDC97 /* HistoryTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCE1BDE8BD290D220B44AC4 /* HistoryTabView.swift */; };
 		8FB2CCF29639FE42A870DA52 /* DailyLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1C4F6F943E71E283D61A3D /* DailyLogTests.swift */; };
 		A08F5ED0DFFAAF1D8808C802 /* PhotoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D33BB9CFCE67AEA26A5C00 /* PhotoCategory.swift */; };
 		AECFC3C120D5F9BE45047570 /* DailyCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1477492E984747E46FE1FCC /* DailyCheckInView.swift */; };
@@ -31,11 +34,13 @@
 		B4DD8B1762EAD81B68ABDF51 /* WHREntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB71535D0B9153B5F9F73F96 /* WHREntry.swift */; };
 		B4F48AA0437B215BD602D81D /* HabitEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549B5273387AD1C371328134 /* HabitEntry.swift */; };
 		BA062AC2C0D9F19650F3683A /* PermissionManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA818DB497AB5D1775B71A9E /* PermissionManaging.swift */; };
+		BCC5AA00B51C7910F5E9C954 /* MonthlyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576E53F6FFE553A6DB42479E /* MonthlyReviewView.swift */; };
 		C2E73D89B81B9FF8984A148D /* PhotoLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6950CE91F5DFD069D3E572E /* PhotoLogTests.swift */; };
 		CC662EDEC3283867A0056554 /* DailyLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ECE424828F750CDD8AF56C5 /* DailyLog.swift */; };
 		D76F76411C5D293DC10D389D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA7A8241E2745B86870E7C9 /* HomeView.swift */; };
 		D7CB4E0C995BEE44E1C27CD3 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F7EAF2DA8442C32A660B59 /* OnboardingFlowView.swift */; };
 		F0851738A25EB0DDB824677E /* nudgeNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE383BB8A2CFA9778B95F767 /* nudgeNotesApp.swift */; };
+		F21FAA33D1CA10E288CD145B /* MonthlyReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE774E7C96588E993303905 /* MonthlyReview.swift */; };
 		F7B87CB2E919FEAACF851E5E /* PhotoLoggingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A254AA350ABF3468C51ED /* PhotoLoggingView.swift */; };
 /* End PBXBuildFile section */
 
@@ -64,12 +69,16 @@
 		288D46A6F285905512F0DE95 /* WHRCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHRCalculatorView.swift; sourceTree = "<group>"; };
 		3B9008F717084C2019155C01 /* WHRCalculatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHRCalculatorViewModel.swift; sourceTree = "<group>"; };
 		427D5D2EE4788AC947F99F27 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		4DCB870B6464FDC430B028BF /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
+		4DE774E7C96588E993303905 /* MonthlyReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyReview.swift; sourceTree = "<group>"; };
 		4E82E0A51410826407826774 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		4ECE424828F750CDD8AF56C5 /* DailyLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyLog.swift; sourceTree = "<group>"; };
 		549B5273387AD1C371328134 /* HabitEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEntry.swift; sourceTree = "<group>"; };
+		576E53F6FFE553A6DB42479E /* MonthlyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyReviewView.swift; sourceTree = "<group>"; };
 		597080A63141BADF0EDD2EC9 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		5AA2FE5A6609919E41100FDE /* NudgeNotesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeNotesUITests.swift; sourceTree = "<group>"; };
 		5ABA01FD79813A0F3758C2CD /* OnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModelTests.swift; sourceTree = "<group>"; };
+		5DCE1BDE8BD290D220B44AC4 /* HistoryTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTabView.swift; sourceTree = "<group>"; };
 		631B54E7CE42009A5717CEB1 /* DailyCheckInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCheckInViewModel.swift; sourceTree = "<group>"; };
 		64F7EAF2DA8442C32A660B59 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		6978D4BD191EF03BCF7002D9 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
@@ -93,6 +102,7 @@
 		DE383BB8A2CFA9778B95F767 /* nudgeNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nudgeNotesApp.swift; sourceTree = "<group>"; };
 		E1477492E984747E46FE1FCC /* DailyCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCheckInView.swift; sourceTree = "<group>"; };
 		E330D1C6A7C4DC6A0DC35E62 /* HabitType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitType.swift; sourceTree = "<group>"; };
+		E56799E051E5CEF921DC3F2C /* HistoryFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryFeaturesTests.swift; sourceTree = "<group>"; };
 		E5CEE793A702425566C5764A /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		E89C10E090846B406E5E59D8 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		EEDAE0100B4F5AC9B6C7FBA4 /* HabitEntryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEntryTests.swift; sourceTree = "<group>"; };
@@ -105,6 +115,7 @@
 			children = (
 				597080A63141BADF0EDD2EC9 /* .gitkeep */,
 				AEBA4DE2C921B88B6FF17177 /* CoreTrackingViewModelTests.swift */,
+				E56799E051E5CEF921DC3F2C /* HistoryFeaturesTests.swift */,
 				5ABA01FD79813A0F3758C2CD /* OnboardingViewModelTests.swift */,
 			);
 			name = ViewModelTests;
@@ -116,6 +127,7 @@
 			children = (
 				E89C10E090846B406E5E59D8 /* .gitkeep */,
 				631B54E7CE42009A5717CEB1 /* DailyCheckInViewModel.swift */,
+				4DCB870B6464FDC430B028BF /* HistoryViewModel.swift */,
 				427D5D2EE4788AC947F99F27 /* HomeViewModel.swift */,
 				E5CEE793A702425566C5764A /* OnboardingViewModel.swift */,
 				3B9008F717084C2019155C01 /* WHRCalculatorViewModel.swift */,
@@ -129,7 +141,9 @@
 			children = (
 				090C3F1F013A8E9CE750D4DF /* ContentView.swift */,
 				E1477492E984747E46FE1FCC /* DailyCheckInView.swift */,
+				5DCE1BDE8BD290D220B44AC4 /* HistoryTabView.swift */,
 				6DA7A8241E2745B86870E7C9 /* HomeView.swift */,
+				576E53F6FFE553A6DB42479E /* MonthlyReviewView.swift */,
 				64F7EAF2DA8442C32A660B59 /* OnboardingFlowView.swift */,
 				C99A254AA350ABF3468C51ED /* PhotoLoggingView.swift */,
 				288D46A6F285905512F0DE95 /* WHRCalculatorView.swift */,
@@ -145,6 +159,7 @@
 				4ECE424828F750CDD8AF56C5 /* DailyLog.swift */,
 				549B5273387AD1C371328134 /* HabitEntry.swift */,
 				E330D1C6A7C4DC6A0DC35E62 /* HabitType.swift */,
+				4DE774E7C96588E993303905 /* MonthlyReview.swift */,
 				B9D33BB9CFCE67AEA26A5C00 /* PhotoCategory.swift */,
 				D5A3DDC472391F8A74A46DF2 /* PhotoLog.swift */,
 				21F66EB73204C27820247EFE /* UserProfile.swift */,
@@ -341,6 +356,7 @@
 				599E69231E599F5104EF8058 /* CoreTrackingViewModelTests.swift in Sources */,
 				8FB2CCF29639FE42A870DA52 /* DailyLogTests.swift in Sources */,
 				6DE687231E567F71B720701C /* HabitEntryTests.swift in Sources */,
+				1C0A62B0E9EEBDA41A0FACEF /* HistoryFeaturesTests.swift in Sources */,
 				15941D0210EAB05EE7FEC297 /* OnboardingViewModelTests.swift in Sources */,
 				C2E73D89B81B9FF8984A148D /* PhotoLogTests.swift in Sources */,
 				57C2E0E5F6B725722BBBD0BD /* TestFixtures.swift in Sources */,
@@ -359,8 +375,12 @@
 				CC662EDEC3283867A0056554 /* DailyLog.swift in Sources */,
 				B4F48AA0437B215BD602D81D /* HabitEntry.swift in Sources */,
 				2191D0DD0C2AACCDF8EB1AF8 /* HabitType.swift in Sources */,
+				8D46761A7F929D0DD2CFDC97 /* HistoryTabView.swift in Sources */,
+				54A2363A9CB10F2DB0303A69 /* HistoryViewModel.swift in Sources */,
 				D76F76411C5D293DC10D389D /* HomeView.swift in Sources */,
 				2C0253F5498D58F8B3B1AC16 /* HomeViewModel.swift in Sources */,
+				F21FAA33D1CA10E288CD145B /* MonthlyReview.swift in Sources */,
+				BCC5AA00B51C7910F5E9C954 /* MonthlyReviewView.swift in Sources */,
 				D7CB4E0C995BEE44E1C27CD3 /* OnboardingFlowView.swift in Sources */,
 				2056FF849B09BE910E233B22 /* OnboardingViewModel.swift in Sources */,
 				BA062AC2C0D9F19650F3683A /* PermissionManaging.swift in Sources */,

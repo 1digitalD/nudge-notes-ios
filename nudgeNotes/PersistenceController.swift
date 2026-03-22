@@ -10,7 +10,8 @@ enum PersistenceController {
             DailyLog.self,
             HabitEntry.self,
             PhotoLog.self,
-            UserProfile.self
+            UserProfile.self,
+            MonthlyReview.self
         ])
 
         let configuration: ModelConfiguration
@@ -23,7 +24,16 @@ enum PersistenceController {
         do {
             return try ModelContainer(for: schema, configurations: [configuration])
         } catch {
-            fatalError("Failed to create model container: \(error)")
+            guard !inMemory else {
+                fatalError("Failed to create model container: \(error)")
+            }
+
+            resetPersistentStore()
+            do {
+                return try ModelContainer(for: schema, configurations: [configuration])
+            } catch {
+                fatalError("Failed to create model container: \(error)")
+            }
         }
     }
 
@@ -38,8 +48,8 @@ enum PersistenceController {
         let baseURL = storeURL
         let urls = [
             baseURL,
-            baseURL.appendingPathExtension("shm"),
-            baseURL.appendingPathExtension("wal")
+            baseURL.deletingPathExtension().appending(path: "\(baseURL.lastPathComponent)-shm"),
+            baseURL.deletingPathExtension().appending(path: "\(baseURL.lastPathComponent)-wal")
         ]
 
         for url in urls where fileManager.fileExists(atPath: url.path) {

@@ -7,7 +7,7 @@ final class UserProfile {
     var onboardingCompleted: Bool
     var isPro: Bool
     var createdAt: Date
-    var goals: [String]
+    private var goalsStorage: String?
 
     init(
         id: UUID = UUID(),
@@ -20,6 +20,16 @@ final class UserProfile {
         self.onboardingCompleted = onboardingCompleted
         self.isPro = isPro
         self.createdAt = createdAt
-        self.goals = goals
+        self.goalsStorage = goals.joined(separator: "|")
+    }
+
+    var goals: [String] {
+        get {
+            guard let goalsStorage, !goalsStorage.isEmpty else { return [] }
+            return goalsStorage.split(separator: "|").map(String.init)
+        }
+        set {
+            goalsStorage = newValue.joined(separator: "|")
+        }
     }
 }

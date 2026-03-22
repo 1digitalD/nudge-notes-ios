@@ -15,7 +15,7 @@ struct HomeView: View {
                     Label("Home", systemImage: "house")
                 }
 
-            placeholderTab(title: "History", subtitle: "Your timeline and reviews will live here next.")
+            HistoryTabView(profile: profile)
                 .tabItem {
                     Label("History", systemImage: "calendar")
                 }
