@@ -1,0 +1,62 @@
+name: nudgeNotes
+options:
+  bundleIdPrefix: com.henkanhacks
+  deploymentTarget:
+    iOS: "17.0"
+targets:
+  nudgeNotes:
+    type: application
+    platform: iOS
+    sources:
+      - path: nudgeNotes/nudgeNotesApp.swift
+      - path: nudgeNotes/PersistenceController.swift
+      - path: nudgeNotes/Models
+      - path: nudgeNotes/Services
+      - path: nudgeNotes/ViewModels
+      - path: nudgeNotes/Views
+      - path: nudgeNotes/Resources
+    settings:
+      base:
+        PRODUCT_NAME: nudgeNotes
+        GENERATE_INFOPLIST_FILE: true
+        PRODUCT_BUNDLE_IDENTIFIER: com.henkanhacks.nudgenotes
+        INFOPLIST_KEY_CFBundleDisplayName: nudge Notes
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.healthcare-fitness
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        SWIFT_VERSION: 5.0
+        SUPPORTS_MACCATALYST: false
+        TARGETED_DEVICE_FAMILY: 1
+    scheme:
+      testTargets:
+        - nudgeNotesTests
+        - nudgeNotesUITests
+  nudgeNotesTests:
+    type: bundle.unit-test
+    platform: iOS
+    hostApplication: nudgeNotes
+    sources:
+      - path: Tests/ModelTests
+      - path: Tests/ViewModelTests
+    dependencies:
+      - target: nudgeNotes
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.henkanhacks.nudgenotes.tests
+        GENERATE_INFOPLIST_FILE: true
+        SWIFT_VERSION: 5.0
+  nudgeNotesUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    hostApplication: nudgeNotes
+    sources:
+      - path: Tests/UITests
+    dependencies:
+      - target: nudgeNotes
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.henkanhacks.nudgenotes.uitests
+        GENERATE_INFOPLIST_FILE: true
+        SWIFT_VERSION: 5.0
