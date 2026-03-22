@@ -1,30 +1,151 @@
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     let profile: UserProfile
+    @State private var selectedDate = Date()
+    @State private var isPresentingCheckIn = false
+    @State private var isPresentingWHR = false
+    @State private var isPresentingPhotoLog = false
 
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Today, gently")
-                    .font(.title3.weight(.medium))
-                    .foregroundStyle(.secondary)
-
-                Text("Home")
-                    .font(.largeTitle.weight(.semibold))
-                    .accessibilityIdentifier("home-title")
-
-                if profile.goals.isEmpty {
-                    Text("Start with a quick check-in when you're ready.")
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Current focus: \(profile.goals.joined(separator: ", "))")
-                        .foregroundStyle(.secondary)
+        TabView {
+            homeDashboard
+                .tabItem {
+                    Label("Home", systemImage: "house")
                 }
+
+            placeholderTab(title: "History", subtitle: "Your timeline and reviews will live here next.")
+                .tabItem {
+                    Label("History", systemImage: "calendar")
+                }
+
+            placeholderTab(title: "Insights", subtitle: "Charts and pattern nudges arrive in Phase 7.")
+                .tabItem {
+                    Label("Insights", systemImage: "chart.xyaxis.line")
+                }
+
+            placeholderTab(title: "Settings", subtitle: "Pro status and preferences stay here.")
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape")
+                }
+        }
+    }
+
+    private var homeDashboard: some View {
+        HomeDashboardView(
+            profile: profile,
+            selectedDate: $selectedDate,
+            isPresentingCheckIn: $isPresentingCheckIn,
+            isPresentingWHR: $isPresentingWHR,
+            isPresentingPhotoLog: $isPresentingPhotoLog
+        )
+        .sheet(isPresented: $isPresentingCheckIn) {
+            DailyCheckInView(date: selectedDate)
+        }
+        .sheet(isPresented: $isPresentingWHR) {
+            WHRCalculatorView(date: selectedDate)
+        }
+        .sheet(isPresented: $isPresentingPhotoLog) {
+            PhotoLoggingView(date: selectedDate)
+        }
+    }
+
+    private func placeholderTab(title: String, subtitle: String) -> some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(title)
+                    .font(.largeTitle.weight(.semibold))
+                Text(subtitle)
+                    .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(24)
             .background(Color(.systemGroupedBackground))
         }
+    }
+}
+
+private struct HomeDashboardView: View {
+    let profile: UserProfile
+    @Binding var selectedDate: Date
+    @Binding var isPresentingCheckIn: Bool
+    @Binding var isPresentingWHR: Bool
+    @Binding var isPresentingPhotoLog: Bool
+
+    @Query(sort: \DailyLog.date, order: .reverse) private var dailyLogs: [DailyLog]
+    @Query(sort: \WHREntry.date, order: .reverse) private var whrEntries: [WHREntry]
+
+    private var summary: HomeViewModel {
+        HomeViewModel(dailyLogs: dailyLogs, whrEntries: whrEntries)
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Home")
+                        .font(.largeTitle.weight(.semibold))
+                        .accessibilityIdentifier("home-title")
+
+                    Text(profile.goals.isEmpty ? "Start with a quick check-in when you're ready." : "Current focus: \(profile.goals.joined(separator: ", "))")
+                        .foregroundStyle(.secondary)
+
+                    DatePicker("Selected day", selection: $selectedDate, displayedComponents: .date)
+                        .datePickerStyle(.compact)
+
+                    HStack(spacing: 12) {
+                        summaryCard(title: "Current WHR", value: summary.latestWHRText, identifier: "current-whr-value")
+                        summaryCard(title: "Days logged", value: "\(summary.loggedDaysCount)", identifier: "logged-days-value")
+                    }
+
+                    HStack(spacing: 12) {
+                        summaryCard(title: "Current streak", value: "\(summary.currentStreak)", identifier: "streak-value")
+                        summaryCard(title: "Photos", value: "\(summary.photoCount)", identifier: "photo-count-value")
+                    }
+
+                    VStack(spacing: 12) {
+                        Button("Check in for today") {
+                            isPresentingCheckIn = true
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color(red: 168 / 255, green: 181 / 255, blue: 160 / 255))
+                        .accessibilityIdentifier("check-in-button")
+
+                        HStack(spacing: 12) {
+                            Button("WHR Calculator") {
+                                isPresentingWHR = true
+                            }
+                            .buttonStyle(.bordered)
+                            .accessibilityIdentifier("whr-calculator-button")
+
+                            Button("Photo Log") {
+                                isPresentingPhotoLog = true
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                    }
+                }
+            }
+            .padding(24)
+            .background(Color(.systemGroupedBackground))
+            .refreshable {
+            }
+        }
+    }
+
+    private func summaryCard(title: String, value: String, identifier: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.title2.weight(.semibold))
+                .accessibilityIdentifier(identifier)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.white)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }

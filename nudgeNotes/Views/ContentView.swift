@@ -20,7 +20,13 @@ struct ContentView: View {
                 ProgressView()
                     .task {
                         guard profiles.isEmpty else { return }
-                        modelContext.insert(UserProfile())
+                        let isSeededOnboarded = ProcessInfo.processInfo.arguments.contains("-ui-testing-seed-onboarded")
+                        modelContext.insert(
+                            UserProfile(
+                                onboardingCompleted: isSeededOnboarded,
+                                goals: isSeededOnboarded ? ["Sleep", "Movement"] : []
+                            )
+                        )
                         try? modelContext.save()
                     }
             }

@@ -34,4 +34,42 @@ final class NudgeNotesUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["home-title"].waitForExistence(timeout: 2))
         XCTAssertFalse(app.staticTexts["welcome-title"].exists)
     }
+
+    func testCoreTrackingFlowCreatesDailyLogAndWHREntry() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-reset-store", "-ui-testing-seed-onboarded", "-ui-testing-use-sample-photo"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["home-title"].waitForExistence(timeout: 2))
+        app.buttons["check-in-button"].tap()
+
+        let sleepField = app.textFields["sleep-hours-field"]
+        sleepField.tap()
+        sleepField.typeText("7.5")
+
+        let stepsField = app.textFields["steps-field"]
+        stepsField.tap()
+        stepsField.typeText("8200")
+
+        let waterField = app.textFields["water-field"]
+        waterField.tap()
+        waterField.typeText("6")
+
+        app.switches["movement-toggle"].tap()
+        app.buttons["save-check-in-button"].tap()
+
+        XCTAssertEqual(app.staticTexts["logged-days-value"].label, "1")
+
+        app.buttons["whr-calculator-button"].tap()
+        let waistField = app.textFields["waist-field"]
+        waistField.tap()
+        waistField.typeText("85")
+
+        let hipField = app.textFields["hip-field"]
+        hipField.tap()
+        hipField.typeText("95")
+        app.buttons["save-whr-button"].tap()
+
+        XCTAssertEqual(app.staticTexts["current-whr-value"].label, "0.89")
+    }
 }

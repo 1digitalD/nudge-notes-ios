@@ -2,8 +2,8 @@
   "projectName": "nudge Notes iOS",
   "version": "0.1.0",
   "buildNumber": 1,
-  "phase": "3-onboarding",
-  "lastUpdated": "2026-03-22T23:01:30Z",
+  "phase": "4-core-tracking",
+  "lastUpdated": "2026-03-22T23:08:30Z",
   "completedTasks": [
     "Name research",
     "GitHub repo created: https://github.com/1digitalD/nudge-notes-ios",
@@ -14,15 +14,17 @@
     "Phase 2 model layer implemented with compile-green test bundle",
     "SwiftData model layer activated with persistent ModelContainer",
     "Phase 3 onboarding flow implemented with persistence and permission mocks",
-    "Onboarding unit tests and UI relaunch test passing"
+    "Onboarding unit tests and UI relaunch test passing",
+    "Phase 4 home dashboard, daily check-in, WHR calculator, and tab shell implemented",
+    "Core tracking unit tests and UI flow passing"
   ],
-  "currentTask": "Codex building Phase 4: core tracking features",
+  "currentTask": "Codex building Phase 5: review and history",
   "blockers": [],
   "nextSteps": [
-    "Codex: Add test-first home dashboard, daily check-in, WHR calculator, and photo logging",
-    "Codex: Expand post-onboarding navigation into tab-based core tracking",
-    "Codex: Verify persistence for daily logs, WHR entries, and photos",
-    "Codex: Commit, push, and mark Phase 4 Todoist items complete"
+    "Codex: Add test-first monthly review, history list, and calendar views",
+    "Codex: Implement edit/delete flows and CSV export gating",
+    "Codex: Verify history persistence and search behavior",
+    "Codex: Commit, push, and mark Phase 5 Todoist items complete"
   ],
   "metadata": {
     "githubRepo": "https://github.com/1digitalD/nudge-notes-ios",
@@ -33,7 +35,7 @@
     "codexStartedAt": "2026-03-22T22:51:31Z",
     "codexMode": "yolo (unrestricted)",
     "testsPassing": true,
-    "testsRun": 3,
+    "testsRun": 5,
     "testsFailed": 0
   },
   "techStack": {
@@ -69,7 +71,7 @@
     "1-testing-framework": {"status": "completed", "progress": 100},
     "2-data-models": {"status": "completed", "progress": 100},
     "3-onboarding": {"status": "completed", "progress": 100},
-    "4-core-tracking": {"status": "not-started", "progress": 0},
+    "4-core-tracking": {"status": "completed", "progress": 100},
     "5-review-history": {"status": "not-started", "progress": 0},
     "6-pro-features": {"status": "not-started", "progress": 0},
     "7-insights": {"status": "not-started", "progress": 0},
