@@ -2,8 +2,8 @@
   "projectName": "nudge Notes iOS",
   "version": "0.1.0",
   "buildNumber": 1,
-  "phase": "4-core-tracking",
-  "lastUpdated": "2026-03-22T23:08:30Z",
+  "phase": "5-review-history",
+  "lastUpdated": "2026-03-22T23:30:00Z",
   "completedTasks": [
     "Name research",
     "GitHub repo created: https://github.com/1digitalD/nudge-notes-ios",
@@ -16,9 +16,10 @@
     "Phase 3 onboarding flow implemented with persistence and permission mocks",
     "Onboarding unit tests and UI relaunch test passing",
     "Phase 4 home dashboard, daily check-in, WHR calculator, and tab shell implemented",
-    "Core tracking unit tests and UI flow passing"
+    "Core tracking unit tests and UI flow passing",
+    "Phase 5 review & history features complete (monthly review, calendar heatmap, searchable history, edit/delete, CSV export)"
   ],
-  "currentTask": "Codex building Phase 5: review and history",
+  "currentTask": "Ready for Phase 6-9 (Pro features, Insights, Polish, TestFlight)",
   "blockers": [],
   "nextSteps": [
     "Codex: Add test-first monthly review, history list, and calendar views",
@@ -72,7 +73,7 @@
     "2-data-models": {"status": "completed", "progress": 100},
     "3-onboarding": {"status": "completed", "progress": 100},
     "4-core-tracking": {"status": "completed", "progress": 100},
-    "5-review-history": {"status": "not-started", "progress": 0},
+    "5-review-history": {"status": "completed", "progress": 100},
     "6-pro-features": {"status": "not-started", "progress": 0},
     "7-insights": {"status": "not-started", "progress": 0},
     "8-polish": {"status": "not-started", "progress": 0},
