@@ -17,9 +17,11 @@ struct WHRCalculatorView: View {
                     TextField("Waist (cm)", text: $viewModel.waistText)
                         .keyboardType(.decimalPad)
                         .accessibilityIdentifier("waist-field")
+                        .accessibilityLabel("Waist in centimeters")
                     TextField("Hip (cm)", text: $viewModel.hipText)
                         .keyboardType(.decimalPad)
                         .accessibilityIdentifier("hip-field")
+                        .accessibilityLabel("Hip in centimeters")
                 }
 
                 Section("Result") {
@@ -48,6 +50,7 @@ struct WHRCalculatorView: View {
                         }
                     }
                     .accessibilityIdentifier("save-whr-button")
+                    .accessibilityLabel("Save WHR entry")
                 }
             }
         }

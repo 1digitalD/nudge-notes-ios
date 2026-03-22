@@ -20,11 +20,13 @@ struct PhotoLoggingView: View {
 
                 TextEditor(text: $notes)
                     .frame(minHeight: 120)
+                    .accessibilityLabel("Photo notes")
 
                 if ProcessInfo.processInfo.arguments.contains("-ui-testing-use-sample-photo") {
                     Button("Save sample photo") {
                         saveSamplePhoto()
                     }
+                    .accessibilityLabel("Save sample photo")
                 }
             }
             .navigationTitle("Photo Log")

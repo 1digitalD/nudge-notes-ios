@@ -13,6 +13,7 @@ struct HistoryTabView: View {
     @State private var selectedLog: DailyLog?
     @State private var pendingDeleteLog: DailyLog?
     @State private var exportMessage: String?
+    @State private var isPresentingUpgrade = false
 
     private var historyViewModel: HistoryViewModel {
         HistoryViewModel(dailyLogs: dailyLogs, profileIsPro: profile.isPro)
@@ -85,6 +86,9 @@ struct HistoryTabView: View {
             .sheet(item: $selectedLog) { log in
                 HistoryLogEditorView(log: log)
             }
+            .sheet(isPresented: $isPresentingUpgrade) {
+                ProUpgradeView(profile: profile)
+            }
             .task {
                 guard reviews.isEmpty else { return }
                 let review = MonthlyReview(
@@ -108,6 +112,7 @@ struct HistoryTabView: View {
                     } else {
                         Button("Export CSV") {
                             exportMessage = "CSV export is available with Pro."
+                            isPresentingUpgrade = true
                         }
                     }
                 }
@@ -169,6 +174,7 @@ private struct CalendarHeatmapView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("heatmap-day-\(Calendar.current.component(.day, from: day))")
+                .accessibilityLabel("\(day.formatted(date: .abbreviated, time: .omitted)), \(count) logs")
             }
         }
     }
@@ -190,6 +196,7 @@ private struct HistoryLogEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Bindable var log: DailyLog
+    @State private var isPresentingDeleteConfirmation = false
 
     var body: some View {
         NavigationStack {
@@ -203,12 +210,29 @@ private struct HistoryLogEditorView: View {
             }
             .navigationTitle("Edit Log")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Delete", role: .destructive) {
+                        isPresentingDeleteConfirmation = true
+                    }
+                    .accessibilityIdentifier("history-editor-delete-button")
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         try? modelContext.save()
                         dismiss()
                     }
                 }
+            }
+            .alert("Delete this log?", isPresented: $isPresentingDeleteConfirmation) {
+                Button("Delete Log", role: .destructive) {
+                    modelContext.delete(log)
+                    try? modelContext.save()
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This removes the selected daily log from history.")
             }
         }
     }

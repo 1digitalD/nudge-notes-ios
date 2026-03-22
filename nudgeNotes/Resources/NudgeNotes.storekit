@@ -1,0 +1,67 @@
+{
+  "identifier" : "E9D2E9A8-91A3-4FE2-9B5D-A0A04A0BF001",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "3B428E88-7CA6-48C0-B9E0-34A217C87501",
+      "localizations" : [
+        {
+          "description" : "Monthly access to insights, CSV export, and restore support.",
+          "displayName" : "Nudge Notes Pro Monthly",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.henkanhacks.nudgenotes.pro.monthly",
+      "recurringSubscriptionPeriod" : "P1M",
+      "referenceName" : "Pro Monthly",
+      "subscriptionGroupID" : "AA7A9CE4-8B6E-446E-BF3C-27A6696A6101",
+      "type" : "RecurringSubscription"
+    },
+    {
+      "displayPrice" : "39.99",
+      "familyShareable" : false,
+      "internalID" : "6E9E3D8C-A71A-4725-B3A9-1EACFFDB5102",
+      "localizations" : [
+        {
+          "description" : "Yearly access to insights, CSV export, and restore support.",
+          "displayName" : "Nudge Notes Pro Yearly",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.henkanhacks.nudgenotes.pro.yearly",
+      "recurringSubscriptionPeriod" : "P1Y",
+      "referenceName" : "Pro Yearly",
+      "subscriptionGroupID" : "AA7A9CE4-8B6E-446E-BF3C-27A6696A6101",
+      "type" : "RecurringSubscription"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "D76B5E13-2C81-4A3F-84F8-B4E0C182F920",
+    "_developerTeamID" : "446P5NH67D",
+    "_lastSynchronizedDate" : 764011200,
+    "_storefront" : "USA",
+    "locale" : "en_US"
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "AA7A9CE4-8B6E-446E-BF3C-27A6696A6101",
+      "localizations" : [
+        {
+          "locale" : "en_US",
+          "name" : "Nudge Notes Pro"
+        }
+      ],
+      "name" : "Nudge Notes Pro",
+      "subscriptions" : [
+        "3B428E88-7CA6-48C0-B9E0-34A217C87501",
+        "6E9E3D8C-A71A-4725-B3A9-1EACFFDB5102"
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

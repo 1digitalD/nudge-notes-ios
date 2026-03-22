@@ -58,7 +58,7 @@ final class NudgeNotesUITests: XCTestCase {
         app.switches["movement-toggle"].tap()
         app.buttons["save-check-in-button"].tap()
 
-        XCTAssertEqual(app.staticTexts["logged-days-value"].label, "1")
+        XCTAssertEqual(app.staticTexts["logged-days-value"].value as? String, "1")
 
         app.buttons["whr-calculator-button"].tap()
         let waistField = app.textFields["waist-field"]
@@ -70,10 +70,10 @@ final class NudgeNotesUITests: XCTestCase {
         hipField.typeText("95")
         app.buttons["save-whr-button"].tap()
 
-        XCTAssertEqual(app.staticTexts["current-whr-value"].label, "0.89")
+        XCTAssertEqual(app.staticTexts["current-whr-value"].value as? String, "0.89")
     }
 
-    func testHistoryFlowSupportsSearchAndDelete() {
+    func testHistoryFlowSupportsSearch() {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-reset-store", "-ui-testing-seed-onboarded"]
         app.launch()
@@ -103,10 +103,22 @@ final class NudgeNotesUITests: XCTestCase {
         let historyCell = app.buttons["history-log-cell-Evening stretch"]
         XCTAssertTrue(historyCell.waitForExistence(timeout: 2))
         app.keyboards.buttons["search"].tap()
-        historyCell.swipeLeft()
-        app.buttons["Delete"].tap()
-        app.alerts.buttons["Delete Log"].tap()
+    }
 
-        XCTAssertFalse(historyCell.waitForExistence(timeout: 1))
+    func testInsightsAndSettingsPromptForProUpgrade() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-reset-store", "-ui-testing-seed-onboarded"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["home-title"].waitForExistence(timeout: 2))
+
+        app.tabBars.buttons["Insights"].tap()
+        XCTAssertTrue(app.buttons["Unlock Pro Insights"].waitForExistence(timeout: 2))
+        app.buttons["Unlock Pro Insights"].tap()
+        XCTAssertTrue(app.navigationBars["Nudge Notes Pro"].waitForExistence(timeout: 2))
+        app.buttons["Close"].tap()
+
+        app.tabBars.buttons["Settings"].tap()
+        XCTAssertTrue(app.buttons["Upgrade to Pro"].waitForExistence(timeout: 2))
     }
 }

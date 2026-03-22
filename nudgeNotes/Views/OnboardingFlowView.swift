@@ -24,7 +24,7 @@ struct OnboardingFlowView: View {
             }
             .padding(24)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color(red: 245 / 255, green: 241 / 255, blue: 232 / 255).ignoresSafeArea())
+            .background(AppTheme.background.ignoresSafeArea())
         }
     }
 
@@ -51,9 +51,10 @@ struct OnboardingFlowView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("nudge Notes")
                 .font(.system(.title, design: .rounded, weight: .bold))
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ProgressView(value: Double(viewModel.step.rawValue), total: Double(OnboardingStep.allCases.count - 1))
-                .tint(Color(red: 168 / 255, green: 181 / 255, blue: 160 / 255))
+                .tint(AppTheme.accent)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -64,13 +65,14 @@ struct OnboardingFlowView: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(viewModel.canContinue ? Color(red: 168 / 255, green: 181 / 255, blue: 160 / 255) : .gray.opacity(0.35))
+                .background(viewModel.canContinue ? AppTheme.accent : .gray.opacity(0.35))
                 .foregroundStyle(.primary)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
         }
         .disabled(!viewModel.canContinue)
         .accessibilityIdentifier(buttonIdentifier)
+        .accessibilityLabel(buttonTitle)
     }
 
     private var buttonTitle: String {
@@ -167,11 +169,13 @@ private struct GoalSelectionView: View {
                         Image(systemName: viewModel.selectedGoals.contains(goal) ? "checkmark.circle.fill" : "circle")
                     }
                     .padding()
-                    .background(.white.opacity(0.7))
+                    .background(AppTheme.cardBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("goal-option-\(goal)")
+                .accessibilityLabel(goal)
+                .accessibilityValue(viewModel.selectedGoals.contains(goal) ? "Selected" : "Not selected")
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -223,11 +227,11 @@ private struct PermissionsView: View {
                 action()
             }
             .buttonStyle(.borderedProminent)
-            .tint(Color(red: 168 / 255, green: 181 / 255, blue: 160 / 255))
+            .tint(AppTheme.accent)
             .accessibilityIdentifier(identifier)
         }
         .padding()
-        .background(.white.opacity(0.7))
+        .background(AppTheme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
@@ -260,8 +264,9 @@ private struct OnboardingCompletionView: View {
                 finish()
             }
             .buttonStyle(.borderedProminent)
-            .tint(Color(red: 168 / 255, green: 181 / 255, blue: 160 / 255))
+            .tint(AppTheme.accent)
             .accessibilityIdentifier("finish-onboarding-button")
+            .accessibilityLabel("Finish onboarding")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

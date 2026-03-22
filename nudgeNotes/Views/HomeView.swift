@@ -20,12 +20,12 @@ struct HomeView: View {
                     Label("History", systemImage: "calendar")
                 }
 
-            placeholderTab(title: "Insights", subtitle: "Charts and pattern nudges arrive in Phase 7.")
+            InsightsView(profile: profile)
                 .tabItem {
                     Label("Insights", systemImage: "chart.xyaxis.line")
                 }
 
-            placeholderTab(title: "Settings", subtitle: "Pro status and preferences stay here.")
+            SettingsView(profile: profile)
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")
                 }
@@ -51,19 +51,6 @@ struct HomeView: View {
         }
     }
 
-    private func placeholderTab(title: String, subtitle: String) -> some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(title)
-                    .font(.largeTitle.weight(.semibold))
-                Text(subtitle)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .padding(24)
-            .background(Color(.systemGroupedBackground))
-        }
-    }
 }
 
 private struct HomeDashboardView: View {
@@ -87,6 +74,7 @@ private struct HomeDashboardView: View {
                     Text("Home")
                         .font(.largeTitle.weight(.semibold))
                         .accessibilityIdentifier("home-title")
+                        .accessibilityAddTraits(.isHeader)
 
                     Text(profile.goals.isEmpty ? "Start with a quick check-in when you're ready." : "Current focus: \(profile.goals.joined(separator: ", "))")
                         .foregroundStyle(.secondary)
@@ -109,8 +97,9 @@ private struct HomeDashboardView: View {
                             isPresentingCheckIn = true
                         }
                         .buttonStyle(.borderedProminent)
-                        .tint(Color(red: 168 / 255, green: 181 / 255, blue: 160 / 255))
+                        .tint(AppTheme.accent)
                         .accessibilityIdentifier("check-in-button")
+                        .accessibilityLabel("Check in for selected day")
 
                         HStack(spacing: 12) {
                             Button("WHR Calculator") {
@@ -118,11 +107,13 @@ private struct HomeDashboardView: View {
                             }
                             .buttonStyle(.bordered)
                             .accessibilityIdentifier("whr-calculator-button")
+                            .accessibilityLabel("Open WHR calculator")
 
                             Button("Photo Log") {
                                 isPresentingPhotoLog = true
                             }
                             .buttonStyle(.bordered)
+                            .accessibilityLabel("Open photo log")
                         }
                     }
                 }
@@ -142,10 +133,12 @@ private struct HomeDashboardView: View {
             Text(value)
                 .font(.title2.weight(.semibold))
                 .accessibilityIdentifier(identifier)
+                .accessibilityLabel(title)
+                .accessibilityValue(value)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(.white)
+        .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }
