@@ -1,0 +1,33 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#FFFFFF"/>
+  
+  <!-- Subtle plus pattern background -->
+  <g opacity="0.15" fill="#7DD3C0">
+    <text x="100" y="150" font-size="80" font-family="Arial">+</text>
+    <text x="300" y="200" font-size="80" font-family="Arial">+</text>
+    <text x="500" y="100" font-size="80" font-family="Arial">+</text>
+    <text x="700" y="180" font-size="80" font-family="Arial">+</text>
+    <text x="150" y="400" font-size="80" font-family="Arial">+</text>
+    <text x="400" y="450" font-size="80" font-family="Arial">+</text>
+    <text x="650" y="380" font-size="80" font-family="Arial">+</text>
+    <text x="850" y="420" font-size="80" font-family="Arial">+</text>
+    <text x="200" y="650" font-size="80" font-family="Arial">+</text>
+    <text x="450" y="700" font-size="80" font-family="Arial">+</text>
+    <text x="750" y="650" font-size="80" font-family="Arial">+</text>
+    <text x="100" y="900" font-size="80" font-family="Arial">+</text>
+    <text x="350" y="950" font-size="80" font-family="Arial">+</text>
+    <text x="600" y="900" font-size="80" font-family="Arial">+</text>
+    <text x="850" y="950" font-size="80" font-family="Arial">+</text>
+  </g>
+  
+  <!-- Main "nudge" logo text -->
+  <text x="512" y="450" font-size="200" font-weight="bold" font-family="Arial, sans-serif" fill="#2B7FDB" text-anchor="middle">nudge</text>
+  
+  <!-- "Notes" text below -->
+  <text x="512" y="600" font-size="120" font-style="italic" font-family="Georgia, serif" fill="#1A1A1A" text-anchor="middle">Notes</text>
+  
+  <!-- Mint arrow accent (simple chevron) -->
+  <path d="M 750 380 L 830 450 L 750 520" stroke="#7DD3C0" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 830 450 L 680 450" stroke="#7DD3C0" stroke-width="20" stroke-linecap="round" opacity="0.6"/>
+</svg>
