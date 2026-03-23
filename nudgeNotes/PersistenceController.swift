@@ -8,6 +8,7 @@ enum PersistenceController {
         let schema = Schema([
             WHREntry.self,
             DailyLog.self,
+            MealLog.self,
             HabitEntry.self,
             PhotoLog.self,
             UserProfile.self,
@@ -55,5 +56,9 @@ enum PersistenceController {
         for url in urls where fileManager.fileExists(atPath: url.path) {
             try? fileManager.removeItem(at: url)
         }
+    }
+
+    static func resetDatabase() {
+        resetPersistentStore()
     }
 }

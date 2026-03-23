@@ -18,10 +18,10 @@ enum DailyLogTestData {
         steps: 8200,
         waterGlasses: 7,
         nutritionQuality: 4,
-        fastingWindow: 12,
         mood: 4,
         stress: 2,
         notes: "Steady day",
-        photos: []
+        photos: [],
+        meals: []
     )
 }

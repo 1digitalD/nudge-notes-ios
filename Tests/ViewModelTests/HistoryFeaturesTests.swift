@@ -2,6 +2,32 @@ import XCTest
 @testable import nudgeNotes
 
 final class HistoryFeaturesTests: XCTestCase {
+    func testPendingDeleteConfirmationRequiresSelection() {
+        let viewModel = HistoryDeletionState()
+
+        XCTAssertNil(viewModel.logPendingDeletion)
+        XCTAssertFalse(viewModel.isShowingDeleteConfirmation)
+
+        let log = DailyLog(date: WHRTestData.referenceDate, notes: "Delete me")
+        viewModel.confirmDelete(for: log)
+
+        XCTAssertTrue(viewModel.isShowingDeleteConfirmation)
+        XCTAssertTrue(viewModel.logPendingDeletion === log)
+
+        viewModel.cancelDelete()
+        XCTAssertFalse(viewModel.isShowingDeleteConfirmation)
+        XCTAssertNil(viewModel.logPendingDeletion)
+    }
+
+    func testSelectingLogForEditReturnsSameLog() {
+        let log = DailyLog(date: WHRTestData.referenceDate, notes: "Editable")
+        let coordinator = HistoryNavigationState()
+
+        coordinator.select(log: log)
+
+        XCTAssertTrue(coordinator.selectedLog === log)
+    }
+
     func testHistorySearchFiltersByNotes() {
         let morningLog = DailyLog(date: WHRTestData.referenceDate, notes: "Morning walk")
         let eveningLog = DailyLog(date: WHRTestData.referenceDate.addingTimeInterval(86_400), notes: "Quiet evening")

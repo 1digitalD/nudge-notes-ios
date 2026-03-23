@@ -33,6 +33,7 @@ struct MonthlyReviewView: View {
                 try? modelContext.save()
             }
             .buttonStyle(.borderedProminent)
+            .tint(AppTheme.accent)
         }
     }
 
@@ -46,7 +47,7 @@ struct MonthlyReviewView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(10)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(AppTheme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }

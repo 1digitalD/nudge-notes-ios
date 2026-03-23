@@ -9,6 +9,7 @@ final class PhotoLog {
     @Attribute(.externalStorage)
     var imageData: Data?
     var notes: String?
+    @Relationship var mealLog: MealLog?
     var dailyLog: DailyLog?
 
     init(

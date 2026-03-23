@@ -1,7 +1,34 @@
 import Foundation
+import Observation
 
 enum CSVExportError: Error {
     case proRequired
+}
+
+@Observable
+final class HistoryNavigationState {
+    var selectedLog: DailyLog?
+
+    func select(log: DailyLog) {
+        selectedLog = log
+    }
+}
+
+@Observable
+final class HistoryDeletionState {
+    var logPendingDeletion: DailyLog?
+
+    var isShowingDeleteConfirmation: Bool {
+        logPendingDeletion != nil
+    }
+
+    func confirmDelete(for log: DailyLog) {
+        logPendingDeletion = log
+    }
+
+    func cancelDelete() {
+        logPendingDeletion = nil
+    }
 }
 
 struct MonthlyHistorySummary {

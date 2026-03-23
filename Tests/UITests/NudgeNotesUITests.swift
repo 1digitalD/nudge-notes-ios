@@ -56,6 +56,10 @@ final class NudgeNotesUITests: XCTestCase {
         waterField.typeText("6")
 
         app.switches["movement-toggle"].tap()
+        app.swipeUp()
+        app.buttons["add-meal-button"].tap()
+        XCTAssertTrue(app.navigationBars["Meal"].waitForExistence(timeout: 2))
+        app.buttons["meal-save-button"].tap()
         app.buttons["save-check-in-button"].tap()
 
         XCTAssertEqual(app.staticTexts["logged-days-value"].value as? String, "1")
@@ -100,9 +104,35 @@ final class NudgeNotesUITests: XCTestCase {
         searchField.tap()
         searchField.typeText("stretch")
 
-        let historyCell = app.buttons["history-log-cell-Evening stretch"]
-        XCTAssertTrue(historyCell.waitForExistence(timeout: 2))
+        XCTAssertTrue(app.staticTexts["Evening stretch"].waitForExistence(timeout: 2))
         app.keyboards.buttons["search"].tap()
+    }
+
+    func testHistoryFlowSupportsEditAndDeleteConfirmation() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-reset-store", "-ui-testing-seed-onboarded"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["home-title"].waitForExistence(timeout: 2))
+        app.buttons["check-in-button"].tap()
+        app.swipeUp()
+        let notesField = app.textFields["notes-field"]
+        notesField.tap()
+        notesField.typeText("Edit target")
+        app.buttons["save-check-in-button"].tap()
+
+        app.tabBars.buttons["History"].tap()
+        let historyCell = app.staticTexts["Edit target"]
+        XCTAssertTrue(historyCell.waitForExistence(timeout: 2))
+        historyCell.tap()
+
+        XCTAssertTrue(app.navigationBars["Daily Check-In"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["update-check-in-button"].exists)
+
+        app.navigationBars["Daily Check-In"].buttons.firstMatch.tap()
+        historyCell.swipeLeft()
+        app.buttons["history-delete-button"].tap()
+        XCTAssertTrue(app.alerts["Delete this log?"].waitForExistence(timeout: 2))
     }
 
     func testInsightsAndSettingsPromptForProUpgrade() {

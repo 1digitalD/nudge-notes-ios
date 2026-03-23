@@ -106,6 +106,7 @@ private struct HomeDashboardView: View {
                                 isPresentingWHR = true
                             }
                             .buttonStyle(.bordered)
+                            .tint(AppTheme.accent)
                             .accessibilityIdentifier("whr-calculator-button")
                             .accessibilityLabel("Open WHR calculator")
 
@@ -113,13 +114,14 @@ private struct HomeDashboardView: View {
                                 isPresentingPhotoLog = true
                             }
                             .buttonStyle(.bordered)
+                            .tint(AppTheme.accent)
                             .accessibilityLabel("Open photo log")
                         }
                     }
                 }
             }
             .padding(24)
-            .background(Color(.systemGroupedBackground))
+            .background(AppTheme.background)
             .refreshable {
             }
         }
@@ -138,7 +140,11 @@ private struct HomeDashboardView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(AppTheme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(AppTheme.divider, lineWidth: 1)
+        )
     }
 }

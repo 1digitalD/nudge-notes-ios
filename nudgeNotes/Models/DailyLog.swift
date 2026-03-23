@@ -11,12 +11,15 @@ final class DailyLog {
     var steps: Int?
     var waterGlasses: Int?
     var nutritionQuality: Int?
-    var fastingWindow: Int?
     var mood: Int?
     var stress: Int?
     var notes: String?
     @Relationship(deleteRule: .cascade, inverse: \PhotoLog.dailyLog)
     var photos: [PhotoLog]
+    @Relationship(deleteRule: .cascade, inverse: \MealLog.dailyLog)
+    var meals: [MealLog]
+    var createdAt: Date
+    var updatedAt: Date
 
     init(
         id: UUID = UUID(),
@@ -27,11 +30,11 @@ final class DailyLog {
         steps: Int? = nil,
         waterGlasses: Int? = nil,
         nutritionQuality: Int? = nil,
-        fastingWindow: Int? = nil,
         mood: Int? = nil,
         stress: Int? = nil,
         notes: String? = nil,
-        photos: [PhotoLog] = []
+        photos: [PhotoLog] = [],
+        meals: [MealLog] = []
     ) {
         self.id = id
         self.date = date
@@ -41,11 +44,12 @@ final class DailyLog {
         self.steps = steps
         self.waterGlasses = waterGlasses
         self.nutritionQuality = nutritionQuality
-        self.fastingWindow = fastingWindow
         self.mood = mood
         self.stress = stress
         self.notes = notes
         self.photos = photos
-        self.photos.forEach { $0.dailyLog = self }
+        self.meals = meals
+        self.createdAt = Date()
+        self.updatedAt = Date()
     }
 }

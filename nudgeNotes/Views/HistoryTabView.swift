@@ -10,10 +10,10 @@ struct HistoryTabView: View {
 
     @State private var searchText = ""
     @State private var selectedDay: Date?
-    @State private var selectedLog: DailyLog?
-    @State private var pendingDeleteLog: DailyLog?
     @State private var exportMessage: String?
     @State private var isPresentingUpgrade = false
+    @State private var navigationState = HistoryNavigationState()
+    @State private var deletionState = HistoryDeletionState()
 
     private var historyViewModel: HistoryViewModel {
         HistoryViewModel(dailyLogs: dailyLogs, profileIsPro: profile.isPro)
@@ -47,14 +47,16 @@ struct HistoryTabView: View {
                                 self.selectedDay = nil
                             }
                             .font(.caption.weight(.semibold))
+                            .buttonStyle(.bordered)
+                            .tint(AppTheme.accent)
                         }
                     }
                 }
 
                 Section("History") {
                     ForEach(historyViewModel.filteredLogs(searchText: searchText, selectedDay: selectedDay), id: \.id) { log in
-                        Button {
-                            selectedLog = log
+                        NavigationLink {
+                            DailyCheckInView(date: log.date, existingLog: log)
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(log.date.formatted(date: .abbreviated, time: .omitted))
@@ -68,11 +70,10 @@ struct HistoryTabView: View {
                                 }
                             }
                         }
-                        .buttonStyle(.plain)
                         .accessibilityIdentifier("history-log-cell-\((log.notes?.isEmpty == false ? log.notes! : log.date.formatted(date: .abbreviated, time: .omitted)))")
                         .swipeActions {
                             Button(role: .destructive) {
-                                pendingDeleteLog = log
+                                deletionState.confirmDelete(for: log)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -83,9 +84,6 @@ struct HistoryTabView: View {
             }
             .navigationTitle("History")
             .searchable(text: $searchText)
-            .sheet(item: $selectedLog) { log in
-                HistoryLogEditorView(log: log)
-            }
             .sheet(isPresented: $isPresentingUpgrade) {
                 ProUpgradeView(profile: profile)
             }
@@ -114,22 +112,24 @@ struct HistoryTabView: View {
                             exportMessage = "CSV export is available with Pro."
                             isPresentingUpgrade = true
                         }
+                        .buttonStyle(.bordered)
+                        .tint(AppTheme.accent)
                     }
                 }
             }
             .alert("Delete this log?", isPresented: Binding(
-                get: { pendingDeleteLog != nil },
-                set: { if !$0 { pendingDeleteLog = nil } }
+                get: { deletionState.isShowingDeleteConfirmation },
+                set: { if !$0 { deletionState.cancelDelete() } }
             )) {
                 Button("Delete Log", role: .destructive) {
-                    if let pendingDeleteLog {
+                    if let pendingDeleteLog = deletionState.logPendingDeletion {
                         modelContext.delete(pendingDeleteLog)
                         try? modelContext.save()
                     }
-                    pendingDeleteLog = nil
+                    deletionState.cancelDelete()
                 }
                 Button("Cancel", role: .cancel) {
-                    pendingDeleteLog = nil
+                    deletionState.cancelDelete()
                 }
             } message: {
                 Text("This removes the selected daily log from history.")
@@ -172,7 +172,8 @@ private struct CalendarHeatmapView: View {
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bordered)
+                .tint(isSelected ? AppTheme.accent : AppTheme.paper)
                 .accessibilityIdentifier("heatmap-day-\(Calendar.current.component(.day, from: day))")
                 .accessibilityLabel("\(day.formatted(date: .abbreviated, time: .omitted)), \(count) logs")
             }
@@ -189,51 +190,5 @@ private struct CalendarHeatmapView: View {
             current = calendar.date(byAdding: .day, value: 1, to: current) ?? interval.end
         }
         return days
-    }
-}
-
-private struct HistoryLogEditorView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Bindable var log: DailyLog
-    @State private var isPresentingDeleteConfirmation = false
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                TextField("Notes", text: Binding(
-                    get: { log.notes ?? "" },
-                    set: { log.notes = $0 }
-                ), axis: .vertical)
-                .lineLimit(4...8)
-                .accessibilityIdentifier("history-edit-notes-field")
-            }
-            .navigationTitle("Edit Log")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Delete", role: .destructive) {
-                        isPresentingDeleteConfirmation = true
-                    }
-                    .accessibilityIdentifier("history-editor-delete-button")
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        try? modelContext.save()
-                        dismiss()
-                    }
-                }
-            }
-            .alert("Delete this log?", isPresented: $isPresentingDeleteConfirmation) {
-                Button("Delete Log", role: .destructive) {
-                    modelContext.delete(log)
-                    try? modelContext.save()
-                    dismiss()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This removes the selected daily log from history.")
-            }
-        }
     }
 }

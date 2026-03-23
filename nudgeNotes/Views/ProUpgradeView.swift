@@ -44,6 +44,8 @@ struct ProUpgradeView: View {
                     Button("Close") {
                         dismiss()
                     }
+                    .buttonStyle(.bordered)
+                    .tint(AppTheme.accent)
                 }
             }
             .task {
@@ -96,7 +98,8 @@ struct ProUpgradeView: View {
                     .background(Color(.secondarySystemGroupedBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bordered)
+                .tint(subscriptionStore.selectedPlan.productID == product.id ? AppTheme.accent : AppTheme.mint)
                 .accessibilityLabel("\(product.displayName), \(product.displayPrice) per \(product.subscriptionPeriod)")
             }
 
@@ -136,6 +139,7 @@ struct ProUpgradeView: View {
                 }
             }
             .buttonStyle(.borderedProminent)
+            .tint(AppTheme.accent)
             .controlSize(.large)
 
             Button("Restore Purchases") {
@@ -144,6 +148,7 @@ struct ProUpgradeView: View {
                 }
             }
             .buttonStyle(.bordered)
+            .tint(AppTheme.accent)
         }
     }
 }

@@ -30,11 +30,15 @@ struct SettingsView: View {
                                 await subscriptionStore.restorePurchases(modelContext: modelContext)
                             }
                         }
+                        .buttonStyle(.bordered)
+                        .tint(AppTheme.accent)
                         Link("Manage Subscriptions", destination: URL(string: "https://apps.apple.com/account/subscriptions")!)
                     } else {
                         Button("Upgrade to Pro") {
                             isPresentingUpgrade = true
                         }
+                        .buttonStyle(.borderedProminent)
+                        .tint(AppTheme.accent)
                     }
                 }
 

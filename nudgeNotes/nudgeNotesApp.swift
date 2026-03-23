@@ -6,6 +6,11 @@ struct NudgeNotesApp: App {
     private let container: ModelContainer
 
     init() {
+        let defaults = UserDefaults.standard
+        if !defaults.bool(forKey: "didResetForMealTrackingMigration") {
+            PersistenceController.resetDatabase()
+            defaults.set(true, forKey: "didResetForMealTrackingMigration")
+        }
         if ProcessInfo.processInfo.arguments.contains("-ui-testing-reset-store") {
             PersistenceController.resetPersistentStore()
         }

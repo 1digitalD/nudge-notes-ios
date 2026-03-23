@@ -5,9 +5,10 @@ struct DailyCheckInView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel: DailyCheckInViewModel
+    @State private var selectedMeal: MealLog?
 
-    init(date: Date) {
-        _viewModel = State(initialValue: DailyCheckInViewModel(date: date))
+    init(date: Date, existingLog: DailyLog? = nil) {
+        _viewModel = State(initialValue: DailyCheckInViewModel(date: date, existingLog: existingLog))
     }
 
     var body: some View {
@@ -40,9 +41,6 @@ struct DailyCheckInView: View {
                         .keyboardType(.numberPad)
                         .accessibilityIdentifier("water-field")
                         .accessibilityLabel("Water glasses")
-                    TextField("Fasting window", text: $viewModel.fastingWindowText)
-                        .keyboardType(.numberPad)
-                        .accessibilityLabel("Fasting window")
                     VStack(alignment: .leading) {
                         Text("Nutrition quality")
                         Slider(value: Binding(
@@ -69,6 +67,56 @@ struct DailyCheckInView: View {
                     }
                 }
 
+                Section("Meals") {
+                    ForEach(viewModel.meals) { meal in
+                        NavigationLink {
+                            MealDetailView(meal: meal)
+                        } label: {
+                            HStack(spacing: 12) {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(meal.mealType.rawValue)
+                                        .font(.headline)
+                                    Text(meal.timestamp, style: .time)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                if let calories = meal.calories {
+                                    Text("\(calories) cal")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                if meal.isPackaged {
+                                    Text("📦")
+                                }
+                            }
+                        }
+                    }
+                    .onDelete(perform: viewModel.deleteMeal)
+
+                    Button("Add Meal") {
+                        selectedMeal = viewModel.addNewMeal()
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(AppTheme.accent)
+                    .accessibilityIdentifier("add-meal-button")
+                }
+
+                Section("Fasting Window") {
+                    if let hours = viewModel.fastingWindowHours(modelContext: modelContext) {
+                        let wholeHours = Int(hours)
+                        let minutes = Int((hours - Double(wholeHours)) * 60)
+                        Text("\(wholeHours)h \(minutes)m fasting")
+                            .font(.title3.weight(.semibold))
+                            .foregroundStyle(AppTheme.accent)
+                            .accessibilityIdentifier("fasting-window-value")
+                    } else {
+                        Text("Log meals to see fasting window")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                    }
+                }
+
                 Section("Notes") {
                     TextField("Notes", text: $viewModel.notes, axis: .vertical)
                         .lineLimit(4...8)
@@ -85,6 +133,8 @@ struct DailyCheckInView: View {
                                 notes: "Sample"
                             )
                         }
+                        .buttonStyle(.bordered)
+                        .tint(AppTheme.accent)
                         .accessibilityIdentifier("add-sample-photo-button")
                     }
 
@@ -93,16 +143,22 @@ struct DailyCheckInView: View {
                 }
             }
             .navigationTitle("Daily Check-In")
+            .navigationDestination(item: $selectedMeal) { meal in
+                MealDetailView(meal: meal)
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(viewModel.isEditMode ? "Update" : "Save") {
                         do {
                             try viewModel.save(in: modelContext)
                             dismiss()
                         } catch {
                         }
                     }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.accent)
                     .accessibilityIdentifier("save-check-in-button")
+                    .accessibilityIdentifier(viewModel.isEditMode ? "update-check-in-button" : "save-check-in-button")
                     .accessibilityLabel("Save daily check-in")
                 }
             }

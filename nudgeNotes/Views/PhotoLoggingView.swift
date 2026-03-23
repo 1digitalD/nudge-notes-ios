@@ -26,6 +26,8 @@ struct PhotoLoggingView: View {
                     Button("Save sample photo") {
                         saveSamplePhoto()
                     }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.accent)
                     .accessibilityLabel("Save sample photo")
                 }
             }
@@ -35,7 +37,7 @@ struct PhotoLoggingView: View {
 
     private func saveSamplePhoto() {
         let photo = PhotoLog(date: date, category: category, imageData: Data([0xAA, 0xBB]), notes: notes)
-        let log = DailyLog(date: date, photos: [photo])
+        let log = DailyLog(date: date, photos: [photo], meals: [])
         modelContext.insert(log)
         try? modelContext.save()
         dismiss()
