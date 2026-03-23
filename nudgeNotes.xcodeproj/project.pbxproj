@@ -256,6 +256,10 @@
 				21F66EB73204C27820247EFE /* UserProfile.swift */,
 				CC7045F68A6A705D5D01BF29 /* WHRCategory.swift */,
 				CB71535D0B9153B5F9F73F96 /* WHREntry.swift */,
+				446AE58E4B8A4E7988271F35 /* WaterLog.swift */,
+				E4D87C6394B74F6C8A3DBFB7 /* WorkoutLog.swift */,
+				FBB5052DA5624AD7B7EB58CB /* MoodLog.swift */,
+				D4F526E38D4545B9842D0B58 /* UserSettings.swift */,
 			);
 			name = Models;
 			path = nudgeNotes/Models;
@@ -292,6 +296,8 @@
 				54C348568AA17F94EF401197 /* ViewModels */,
 				530AAAA69B6ED5837F1570D2 /* ViewModelTests */,
 				7359A17E6795D82124A137F5 /* Views */,
+				3F3113C979FE44858A542ACC /* Components */,
+				34359B59EA0E4FEA88B0664E /* Segments */,
 				BFEA2958A837F5A0EE8C143C /* Products */,
 			);
 			sourceTree = "<group>";
