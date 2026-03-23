@@ -14,10 +14,20 @@ final class DailyLog {
     var mood: Int?
     var stress: Int?
     var notes: String?
+    // Body metrics (segment redesign)
+    var weight: Double?
+    var waist: Double?
+    var hips: Double?
     @Relationship(deleteRule: .cascade, inverse: \PhotoLog.dailyLog)
     var photos: [PhotoLog]
     @Relationship(deleteRule: .cascade, inverse: \MealLog.dailyLog)
     var meals: [MealLog]
+    @Relationship(deleteRule: .cascade, inverse: \WaterLog.dailyLog)
+    var waterLogs: [WaterLog]
+    @Relationship(deleteRule: .cascade, inverse: \WorkoutLog.dailyLog)
+    var workoutLogs: [WorkoutLog]
+    @Relationship(deleteRule: .cascade, inverse: \MoodLog.dailyLog)
+    var moodLogs: [MoodLog]
     var createdAt: Date
     var updatedAt: Date
 
@@ -33,8 +43,14 @@ final class DailyLog {
         mood: Int? = nil,
         stress: Int? = nil,
         notes: String? = nil,
+        weight: Double? = nil,
+        waist: Double? = nil,
+        hips: Double? = nil,
         photos: [PhotoLog] = [],
-        meals: [MealLog] = []
+        meals: [MealLog] = [],
+        waterLogs: [WaterLog] = [],
+        workoutLogs: [WorkoutLog] = [],
+        moodLogs: [MoodLog] = []
     ) {
         self.id = id
         self.date = date
@@ -47,8 +63,14 @@ final class DailyLog {
         self.mood = mood
         self.stress = stress
         self.notes = notes
+        self.weight = weight
+        self.waist = waist
+        self.hips = hips
         self.photos = photos
         self.meals = meals
+        self.waterLogs = waterLogs
+        self.workoutLogs = workoutLogs
+        self.moodLogs = moodLogs
         self.createdAt = Date()
         self.updatedAt = Date()
     }

@@ -4,164 +4,235 @@ import SwiftData
 struct DailyCheckInView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @State private var viewModel: DailyCheckInViewModel
-    @State private var selectedMeal: MealLog?
+
+    let date: Date
+    let existingLog: DailyLog?
+
+    // Settings (shared across app)
+    @State private var settings = UserSettings()
+
+    // Segment expand/collapse state (all collapsed by default)
+    @State private var expanded: [SegmentType: Bool] = [:]
+
+    // Auto-save state
+    @State private var saveTask: Task<Void, Never>?
+    @State private var savedIndicator = false
+
+    // The working daily log
+    @State private var dailyLog: DailyLog?
 
     init(date: Date, existingLog: DailyLog? = nil) {
-        _viewModel = State(initialValue: DailyCheckInViewModel(date: date, existingLog: existingLog))
+        self.date = date
+        self.existingLog = existingLog
     }
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Sleep") {
-                    TextField("Hours", text: $viewModel.sleepHoursText)
-                        .keyboardType(.decimalPad)
-                        .accessibilityIdentifier("sleep-hours-field")
-                        .accessibilityLabel("Sleep hours")
-                    VStack(alignment: .leading) {
-                        Text("Sleep quality")
-                        Slider(value: Binding(
-                            get: { Double(viewModel.sleepQuality) },
-                            set: { viewModel.sleepQuality = Int($0.rounded()) }
-                        ), in: 1...5, step: 1)
-                        .accessibilityValue("\(viewModel.sleepQuality) out of 5")
-                    }
-                }
-
-                Section("Daily signals") {
-                    Toggle("Movement", isOn: $viewModel.movement)
-                        .accessibilityIdentifier("movement-toggle")
-                        .accessibilityLabel("Movement completed")
-                    TextField("Steps", text: $viewModel.stepsText)
-                        .keyboardType(.numberPad)
-                        .accessibilityIdentifier("steps-field")
-                        .accessibilityLabel("Steps")
-                    TextField("Water glasses", text: $viewModel.waterGlassesText)
-                        .keyboardType(.numberPad)
-                        .accessibilityIdentifier("water-field")
-                        .accessibilityLabel("Water glasses")
-                    VStack(alignment: .leading) {
-                        Text("Nutrition quality")
-                        Slider(value: Binding(
-                            get: { Double(viewModel.nutritionQuality) },
-                            set: { viewModel.nutritionQuality = Int($0.rounded()) }
-                        ), in: 1...5, step: 1)
-                        .accessibilityValue("\(viewModel.nutritionQuality) out of 5")
-                    }
-                    VStack(alignment: .leading) {
-                        Text("Mood")
-                        Slider(value: Binding(
-                            get: { Double(viewModel.mood) },
-                            set: { viewModel.mood = Int($0.rounded()) }
-                        ), in: 1...5, step: 1)
-                        .accessibilityValue("\(viewModel.mood) out of 5")
-                    }
-                    VStack(alignment: .leading) {
-                        Text("Stress")
-                        Slider(value: Binding(
-                            get: { Double(viewModel.stress) },
-                            set: { viewModel.stress = Int($0.rounded()) }
-                        ), in: 1...5, step: 1)
-                        .accessibilityValue("\(viewModel.stress) out of 5")
-                    }
-                }
-
-                Section("Meals") {
-                    ForEach(viewModel.meals) { meal in
-                        NavigationLink {
-                            MealDetailView(meal: meal)
-                        } label: {
-                            HStack(spacing: 12) {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(meal.mealType.rawValue)
-                                        .font(.headline)
-                                    Text(meal.timestamp, style: .time)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                if let calories = meal.calories {
-                                    Text("\(calories) cal")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                if meal.isPackaged {
-                                    Text("📦")
-                                }
+            Group {
+                if let log = dailyLog {
+                    ScrollView {
+                        LazyVStack(spacing: 1) {
+                            ForEach(settings.segmentOrder) { segment in
+                                segmentView(for: segment, log: log)
                             }
+
+                            // Notes at bottom
+                            notesSegment(log: log)
                         }
+                        .padding(.top, 1)
                     }
-                    .onDelete(perform: viewModel.deleteMeal)
-
-                    Button("Add Meal") {
-                        selectedMeal = viewModel.addNewMeal()
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(AppTheme.accent)
-                    .accessibilityIdentifier("add-meal-button")
+                    .background(AppTheme.background)
+                } else {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-
-                Section("Fasting Window") {
-                    if let hours = viewModel.fastingWindowHours(modelContext: modelContext) {
-                        let wholeHours = Int(hours)
-                        let minutes = Int((hours - Double(wholeHours)) * 60)
-                        Text("\(wholeHours)h \(minutes)m fasting")
-                            .font(.title3.weight(.semibold))
-                            .foregroundStyle(AppTheme.accent)
-                            .accessibilityIdentifier("fasting-window-value")
-                    } else {
-                        Text("Log meals to see fasting window")
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                    }
-                }
-
-                Section("Notes") {
-                    TextField("Notes", text: $viewModel.notes, axis: .vertical)
-                        .lineLimit(4...8)
-                        .accessibilityIdentifier("notes-field")
-                        .accessibilityLabel("Notes")
-                }
-
-                Section("Photos") {
-                    if ProcessInfo.processInfo.arguments.contains("-ui-testing-use-sample-photo") {
-                        Button("Add sample photo") {
-                            viewModel.addPhoto(
-                                data: Data([0x00, 0x01, 0x02]),
-                                category: .meal,
-                                notes: "Sample"
-                            )
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(AppTheme.accent)
-                        .accessibilityIdentifier("add-sample-photo-button")
-                    }
-
-                    Text("\(viewModel.photos.count) attached")
+            }
+            .navigationTitle(navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") { dismiss() }
                         .foregroundStyle(.secondary)
                 }
-            }
-            .navigationTitle("Daily Check-In")
-            .navigationDestination(item: $selectedMeal) { meal in
-                MealDetailView(meal: meal)
-            }
-            .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(viewModel.isEditMode ? "Update" : "Save") {
-                        do {
-                            try viewModel.save(in: modelContext)
-                            dismiss()
-                        } catch {
+                    if savedIndicator {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(Color(hex: "#4CAF50"))
+                            Text("Saved")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
+                        .transition(.opacity)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.accent)
-                    .accessibilityIdentifier("save-check-in-button")
-                    .accessibilityIdentifier(viewModel.isEditMode ? "update-check-in-button" : "save-check-in-button")
-                    .accessibilityLabel("Save daily check-in")
                 }
             }
+        }
+        .onAppear { loadOrCreateLog() }
+    }
+
+    // MARK: - Segment Rendering
+
+    @ViewBuilder
+    private func segmentView(for segment: SegmentType, log: DailyLog) -> some View {
+        let isExpanded = Binding(
+            get: { expanded[segment] ?? false },
+            set: { expanded[segment] = $0 }
+        )
+
+        switch segment {
+        case .body:
+            CollapsibleSegment(
+                title: "Body Metrics",
+                isExpanded: isExpanded,
+                header: { BodyMetricsCollapsedSummary(dailyLog: log) },
+                content: {
+                    BodyMetricsSegmentView(dailyLog: log, onChanged: scheduleAutoSave)
+                }
+            )
+
+        case .hydration:
+            CollapsibleSegment(
+                title: "Hydration",
+                isExpanded: isExpanded,
+                header: { HydrationCollapsedSummary(dailyLog: log, settings: settings) },
+                content: {
+                    HydrationSegmentView(
+                        dailyLog: log,
+                        settings: settings,
+                        onChanged: scheduleAutoSave
+                    )
+                }
+            )
+
+        case .nutrition:
+            CollapsibleSegment(
+                title: "Nutrition",
+                isExpanded: isExpanded,
+                header: { NutritionCollapsedSummary(dailyLog: log) },
+                content: {
+                    NutritionSegmentView(dailyLog: log, onChanged: scheduleAutoSave)
+                }
+            )
+
+        case .movement:
+            CollapsibleSegment(
+                title: "Movement",
+                isExpanded: isExpanded,
+                header: { MovementCollapsedSummary(dailyLog: log, settings: settings) },
+                content: {
+                    MovementSegmentView(
+                        dailyLog: log,
+                        settings: settings,
+                        onChanged: scheduleAutoSave
+                    )
+                }
+            )
+
+        case .mood:
+            CollapsibleSegment(
+                title: "Mood & Energy",
+                isExpanded: isExpanded,
+                header: { MoodCollapsedSummary(dailyLog: log) },
+                content: {
+                    MoodSegmentView(dailyLog: log, onChanged: scheduleAutoSave)
+                }
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func notesSegment(log: DailyLog) -> some View {
+        let isExpanded = Binding(
+            get: { expanded[.mood] ?? false }, // reuse a slot; notes isn't in SegmentType
+            set: { _ in }
+        )
+        // Simple notes section outside of segment ordering
+        VStack(spacing: 0) {
+            HStack {
+                Text("Notes")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.ink)
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+
+            Divider().padding(.horizontal, 16)
+
+            TextField(
+                "Any notes for today…",
+                text: Binding(
+                    get: { log.notes ?? "" },
+                    set: { log.notes = $0.isEmpty ? nil : $0; scheduleAutoSave() }
+                ),
+                axis: .vertical
+            )
+            .lineLimit(3...8)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .font(.subheadline)
+            .accessibilityIdentifier("notes-field")
+
+            Divider().padding(.horizontal, 16)
+        }
+        .background(AppTheme.cardBackground)
+        .padding(.top, 8)
+    }
+
+    // MARK: - Data
+
+    private var navigationTitle: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE, MMM d"
+        return formatter.string(from: date)
+    }
+
+    private func loadOrCreateLog() {
+        if let existing = existingLog {
+            dailyLog = existing
+        } else {
+            // Look for existing log for this date
+            let start = Calendar.current.startOfDay(for: date)
+            let end = Calendar.current.date(byAdding: .day, value: 1, to: start) ?? start
+            let descriptor = FetchDescriptor<DailyLog>(
+                predicate: #Predicate<DailyLog> { log in
+                    log.date >= start && log.date < end
+                }
+            )
+            if let found = try? modelContext.fetch(descriptor).first {
+                dailyLog = found
+            } else {
+                let log = DailyLog(date: date)
+                modelContext.insert(log)
+                try? modelContext.save()
+                dailyLog = log
+            }
+        }
+    }
+
+    // MARK: - Auto-Save (debounced 1 second)
+
+    private func scheduleAutoSave() {
+        saveTask?.cancel()
+        saveTask = Task {
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            guard !Task.isCancelled else { return }
+            await persistSave()
+        }
+    }
+
+    @MainActor
+    private func persistSave() {
+        guard let log = dailyLog else { return }
+        log.updatedAt = Date()
+        try? modelContext.save()
+        withAnimation {
+            savedIndicator = true
+        }
+        Task {
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            withAnimation { savedIndicator = false }
         }
     }
 }

@@ -12,7 +12,10 @@ enum PersistenceController {
             HabitEntry.self,
             PhotoLog.self,
             UserProfile.self,
-            MonthlyReview.self
+            MonthlyReview.self,
+            WaterLog.self,
+            WorkoutLog.self,
+            MoodLog.self
         ])
 
         let configuration: ModelConfiguration

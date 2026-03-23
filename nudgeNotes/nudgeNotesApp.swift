@@ -11,6 +11,10 @@ struct NudgeNotesApp: App {
             PersistenceController.resetDatabase()
             defaults.set(true, forKey: "didResetForMealTrackingMigration")
         }
+        if !defaults.bool(forKey: "didResetForSegmentRedesignMigration") {
+            PersistenceController.resetDatabase()
+            defaults.set(true, forKey: "didResetForSegmentRedesignMigration")
+        }
         if ProcessInfo.processInfo.arguments.contains("-ui-testing-reset-store") {
             PersistenceController.resetPersistentStore()
         }
