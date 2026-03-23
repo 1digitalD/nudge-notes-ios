@@ -10,10 +10,25 @@ struct HomeView: View {
 
     var body: some View {
         TabView {
-            homeDashboard
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
+            HomeDashboardView(
+                profile: profile,
+                selectedDate: $selectedDate,
+                isPresentingCheckIn: $isPresentingCheckIn,
+                isPresentingWHR: $isPresentingWHR,
+                isPresentingPhotoLog: $isPresentingPhotoLog
+            )
+            .sheet(isPresented: $isPresentingCheckIn) {
+                DailyCheckInView(date: selectedDate)
+            }
+            .sheet(isPresented: $isPresentingWHR) {
+                WHRCalculatorView(date: selectedDate)
+            }
+            .sheet(isPresented: $isPresentingPhotoLog) {
+                PhotoLoggingView(date: selectedDate)
+            }
+            .tabItem {
+                Label("Home", systemImage: "house")
+            }
 
             HistoryTabView(profile: profile)
                 .tabItem {
@@ -30,28 +45,11 @@ struct HomeView: View {
                     Label("Settings", systemImage: "gearshape")
                 }
         }
+        .tint(.appAccent)
     }
-
-    private var homeDashboard: some View {
-        HomeDashboardView(
-            profile: profile,
-            selectedDate: $selectedDate,
-            isPresentingCheckIn: $isPresentingCheckIn,
-            isPresentingWHR: $isPresentingWHR,
-            isPresentingPhotoLog: $isPresentingPhotoLog
-        )
-        .sheet(isPresented: $isPresentingCheckIn) {
-            DailyCheckInView(date: selectedDate)
-        }
-        .sheet(isPresented: $isPresentingWHR) {
-            WHRCalculatorView(date: selectedDate)
-        }
-        .sheet(isPresented: $isPresentingPhotoLog) {
-            PhotoLoggingView(date: selectedDate)
-        }
-    }
-
 }
+
+// MARK: - Dashboard
 
 private struct HomeDashboardView: View {
     let profile: UserProfile
@@ -67,84 +65,164 @@ private struct HomeDashboardView: View {
         HomeViewModel(dailyLogs: dailyLogs, whrEntries: whrEntries)
     }
 
+    private var greeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 6..<12:  return "Good morning"
+        case 12..<18: return "Good afternoon"
+        case 18..<22: return "Good evening"
+        default:      return "Good night"
+        }
+    }
+
+    private var greetingEmoji: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 6..<18: return "☀️"
+        default:     return "🌙"
+        }
+    }
+
+    private var todayDateString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE, MMMM d"
+        return formatter.string(from: Date())
+    }
+
+    private var daysLoggedThisMonth: Int {
+        let cal = Calendar.current
+        let now = Date()
+        guard let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: now)) else {
+            return 0
+        }
+        let thisMonthLogs = dailyLogs.filter { $0.date >= monthStart && $0.date <= now }
+        return Set(thisMonthLogs.map { cal.startOfDay(for: $0.date) }).count
+    }
+
+    private var daysInMonthSoFar: Int {
+        Calendar.current.component(.day, from: Date())
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text("Home")
-                        .font(.largeTitle.weight(.semibold))
-                        .accessibilityIdentifier("home-title")
-                        .accessibilityAddTraits(.isHeader)
+                VStack(alignment: .leading, spacing: AppSpacing.sectionSpacing) {
 
-                    Text(profile.goals.isEmpty ? "Start with a quick check-in when you're ready." : "Current focus: \(profile.goals.joined(separator: ", "))")
-                        .foregroundStyle(.secondary)
+                    // MARK: Greeting
+                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                        Text("\(greeting) \(greetingEmoji)")
+                            .font(AppFonts.title)
+                            .foregroundColor(.appText)
+                            .accessibilityAddTraits(.isHeader)
 
-                    DatePicker("Selected day", selection: $selectedDate, displayedComponents: .date)
-                        .datePickerStyle(.compact)
-
-                    HStack(spacing: 12) {
-                        summaryCard(title: "Current WHR", value: summary.latestWHRText, identifier: "current-whr-value")
-                        summaryCard(title: "Days logged", value: "\(summary.loggedDaysCount)", identifier: "logged-days-value")
+                        Text(todayDateString)
+                            .font(AppFonts.caption)
+                            .foregroundColor(.appTextSecondary)
                     }
 
-                    HStack(spacing: 12) {
-                        summaryCard(title: "Current streak", value: "\(summary.currentStreak)", identifier: "streak-value")
-                        summaryCard(title: "Photos", value: "\(summary.photoCount)", identifier: "photo-count-value")
+                    // MARK: Today's Check-in CTA
+                    AppCard {
+                        VStack(alignment: .leading, spacing: AppSpacing.md) {
+                            HStack {
+                                Text("Today's Check-in")
+                                    .font(AppFonts.headline)
+                                    .foregroundColor(.appText)
+                                Spacer()
+                                Image(systemName: "pencil.circle.fill")
+                                    .font(.title2)
+                                    .foregroundColor(.appAccent)
+                            }
+
+                            Divider()
+                                .background(Color.appBorder)
+
+                            AppButton("Tap to Log") {
+                                isPresentingCheckIn = true
+                            }
+                            .accessibilityIdentifier("check-in-button")
+                            .accessibilityLabel("Check in for selected day")
+                        }
                     }
 
-                    VStack(spacing: 12) {
-                        Button("Check in for today") {
-                            isPresentingCheckIn = true
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(AppTheme.accent)
-                        .accessibilityIdentifier("check-in-button")
-                        .accessibilityLabel("Check in for selected day")
-
-                        HStack(spacing: 12) {
-                            Button("WHR Calculator") {
-                                isPresentingWHR = true
+                    // MARK: This Month Stats
+                    AppCard {
+                        VStack(alignment: .leading, spacing: AppSpacing.md) {
+                            HStack {
+                                Label("This Month", systemImage: "chart.bar.fill")
+                                    .font(AppFonts.headline)
+                                    .foregroundColor(.appText)
+                                Spacer()
                             }
-                            .buttonStyle(.bordered)
-                            .tint(AppTheme.accent)
-                            .accessibilityIdentifier("whr-calculator-button")
-                            .accessibilityLabel("Open WHR calculator")
 
-                            Button("Photo Log") {
-                                isPresentingPhotoLog = true
+                            Divider()
+                                .background(Color.appBorder)
+
+                            VStack(spacing: AppSpacing.sm) {
+                                statRow(label: "Days logged",
+                                        value: "\(daysLoggedThisMonth) / \(daysInMonthSoFar)",
+                                        identifier: "logged-days-value")
+                                statRow(label: "Current WHR",
+                                        value: summary.latestWHRText,
+                                        identifier: "current-whr-value")
+                                statRow(label: "Current streak",
+                                        value: "\(summary.currentStreak) days",
+                                        identifier: "streak-value")
+                                statRow(label: "Photos",
+                                        value: "\(summary.photoCount)",
+                                        identifier: "photo-count-value")
                             }
-                            .buttonStyle(.bordered)
-                            .tint(AppTheme.accent)
-                            .accessibilityLabel("Open photo log")
                         }
+                    }
+
+                    // MARK: Quick Actions
+                    HStack(spacing: AppSpacing.sm) {
+                        AppButton("WHR", variant: .secondary) {
+                            isPresentingWHR = true
+                        }
+                        .accessibilityIdentifier("whr-calculator-button")
+
+                        AppButton("Photos", variant: .secondary) {
+                            isPresentingPhotoLog = true
+                        }
+                    }
+
+                }
+                .padding(.horizontal, AppSpacing.screenPadding)
+                .padding(.top, AppSpacing.lg)
+                .padding(.bottom, AppSpacing.xxl)
+            }
+            .background(Color.appBackground.ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Nudge Notes")
+                        .font(AppFonts.captionEmphasized)
+                        .foregroundColor(.appTextSecondary)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if profile.isPro {
+                        Label("Pro", systemImage: "star.fill")
+                            .font(AppFonts.footnote)
+                            .foregroundColor(.appAccent)
+                            .labelStyle(.iconOnly)
                     }
                 }
-            }
-            .padding(24)
-            .background(AppTheme.background)
-            .refreshable {
             }
         }
     }
 
-    private func summaryCard(title: String, value: String, identifier: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.secondary)
+    private func statRow(label: String, value: String, identifier: String) -> some View {
+        HStack {
+            Text(label)
+                .font(AppFonts.caption)
+                .foregroundColor(.appTextSecondary)
+            Spacer()
             Text(value)
-                .font(.title2.weight(.semibold))
+                .font(AppFonts.captionEmphasized)
+                .foregroundColor(.appText)
                 .accessibilityIdentifier(identifier)
-                .accessibilityLabel(title)
+                .accessibilityLabel(label)
                 .accessibilityValue(value)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(AppTheme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(AppTheme.divider, lineWidth: 1)
-        )
     }
 }

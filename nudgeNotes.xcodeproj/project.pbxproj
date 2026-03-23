@@ -66,6 +66,11 @@
 		2FA1CAF2EE0D48E2AEF8F0A2 /* IncrementalInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14448E353E3E44C1AAD6AC9C /* IncrementalInput.swift */; };
 		F39E4A045061465A83F6F2A2 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CFC38D1A464F0CB24980E8 /* ProgressBar.swift */; };
 		78416C96B4C149528DCA659F /* HydrationSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FB6158E252405883703F6A /* HydrationSegmentView.swift */; };
+		7E8F9A0B1C2D3E4F5A6B7C8D /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3F1C2D8E5B4F6A7C0D1E2B /* DesignSystem.swift */; };
+		3C4D5E6F7A8B9C0D1E2F3A4B /* AppCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2E3F4A5B6C7D8E9F0A1B2C /* AppCard.swift */; };
+		7A8B9C0D1E2F3A4B5C6D7E8F /* AppButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6A7B8C9D0E1F2A3B4C5D6E /* AppButton.swift */; };
+		1E2F3A4B5C6D7E8F9A0B1C2D /* AppTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0C1D2E3F4A5B6C7D8E9F0A /* AppTextField.swift */; };
+		5A6B7C8D9E0F1A2B3C4D5E6F /* AppCheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A5B6C7D8E9F0A1B2C3D4E /* AppCheckbox.swift */; };
 		0CC404E65CCB4B0B86D4D73A /* MovementSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31B0CF7A6BB49A583C28F18 /* MovementSegmentView.swift */; };
 		BB430145C3E64A9588EF4C42 /* MoodSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63BF193A7F14539AF7979EA /* MoodSegmentView.swift */; };
 		18C83F03403140C18D14CBEA /* BodyMetricsSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3780C8375C3B4CEBB0E3647A /* BodyMetricsSegmentView.swift */; };
@@ -163,6 +168,11 @@
 		B63BF193A7F14539AF7979EA /* MoodSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodSegmentView.swift; sourceTree = "<group>"; };
 		3780C8375C3B4CEBB0E3647A /* BodyMetricsSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyMetricsSegmentView.swift; sourceTree = "<group>"; };
 		99BD09E23E86465D9674E232 /* NutritionSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionSegmentView.swift; sourceTree = "<group>"; };
+		9A3F1C2D8E5B4F6A7C0D1E2B /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		1D2E3F4A5B6C7D8E9F0A1B2C /* AppCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCard.swift; sourceTree = "<group>"; };
+		5F6A7B8C9D0E1F2A3B4C5D6E /* AppButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButton.swift; sourceTree = "<group>"; };
+		9B0C1D2E3F4A5B6C7D8E9F0A /* AppTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextField.swift; sourceTree = "<group>"; };
+		3F4A5B6C7D8E9F0A1B2C3D4E /* AppCheckbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCheckbox.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -172,6 +182,10 @@
 				ABE43106D01E411C86002629 /* CollapsibleSegment.swift */,
 				14448E353E3E44C1AAD6AC9C /* IncrementalInput.swift */,
 				F1CFC38D1A464F0CB24980E8 /* ProgressBar.swift */,
+				1D2E3F4A5B6C7D8E9F0A1B2C /* AppCard.swift */,
+				5F6A7B8C9D0E1F2A3B4C5D6E /* AppButton.swift */,
+				9B0C1D2E3F4A5B6C7D8E9F0A /* AppTextField.swift */,
+				3F4A5B6C7D8E9F0A1B2C3D4E /* AppCheckbox.swift */,
 			);
 			name = Components;
 			path = nudgeNotes/Components;
@@ -317,6 +331,7 @@
 			children = (
 				8BF724E4A26FD45A6A52E776 /* .gitkeep */,
 				C6D0F685B9C6667E3488D11B /* AppTheme.swift */,
+				9A3F1C2D8E5B4F6A7C0D1E2B /* DesignSystem.swift */,
 				642F0A8DD397FDBACBAE867F /* Assets.xcassets */,
 				EB4B8787C6B4E96E0D0034F1 /* LaunchScreen.storyboard */,
 				2C906463668207595229E04A /* NudgeNotes.storekit */,
@@ -535,6 +550,11 @@
 				BB430145C3E64A9588EF4C42 /* MoodSegmentView.swift in Sources */,
 				18C83F03403140C18D14CBEA /* BodyMetricsSegmentView.swift in Sources */,
 				0FF541AD271E4D75B72B2CD8 /* NutritionSegmentView.swift in Sources */,
+				7E8F9A0B1C2D3E4F5A6B7C8D /* DesignSystem.swift in Sources */,
+				3C4D5E6F7A8B9C0D1E2F3A4B /* AppCard.swift in Sources */,
+				7A8B9C0D1E2F3A4B5C6D7E8F /* AppButton.swift in Sources */,
+				1E2F3A4B5C6D7E8F9A0B1C2D /* AppTextField.swift in Sources */,
+				5A6B7C8D9E0F1A2B3C4D5E6F /* AppCheckbox.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
