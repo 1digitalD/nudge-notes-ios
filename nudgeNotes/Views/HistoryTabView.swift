@@ -6,131 +6,104 @@ struct HistoryTabView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \DailyLog.date, order: .reverse) private var dailyLogs: [DailyLog]
-    @Query(sort: \MonthlyReview.monthStart, order: .reverse) private var reviews: [MonthlyReview]
+    @Query(sort: \MonthlyReview.month, order: .reverse) private var reviews: [MonthlyReview]
 
-    @State private var searchText = ""
+    @State private var displayedMonth: Date = Calendar.current.date(
+        from: Calendar.current.dateComponents([.year, .month], from: .now)) ?? .now
     @State private var selectedDay: Date?
+    @State private var searchText = ""
     @State private var exportMessage: String?
     @State private var isPresentingUpgrade = false
-    @State private var navigationState = HistoryNavigationState()
+    @State private var isShowingMonthlyReview = false
     @State private var deletionState = HistoryDeletionState()
 
     private var historyViewModel: HistoryViewModel {
         HistoryViewModel(dailyLogs: dailyLogs, profileIsPro: profile.isPro)
     }
 
+    private var currentMonthReview: MonthlyReview? {
+        reviews.first {
+            Calendar.current.isDate($0.month, equalTo: displayedMonth, toGranularity: .month)
+        }
+    }
+
+    private var loggedDaySet: Set<Date> {
+        Set(dailyLogs.map { Calendar.current.startOfDay(for: $0.date) })
+    }
+
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    if let review = reviews.first {
-                        MonthlyReviewView(review: review, summary: historyViewModel.monthlySummary(for: review.monthStart))
-                    } else {
-                        ProgressView()
+            ScrollView {
+                VStack(spacing: AppSpacing.sectionSpacing) {
+                    calendarCard
+                    if let day = selectedDay {
+                        dayDetailCard(for: day)
                     }
+                    historyListSection
                 }
-
-                Section("Calendar") {
-                    CalendarHeatmapView(
-                        heatmap: historyViewModel.heatmapByDay,
-                        selectedDay: selectedDay
-                    ) { day in
-                        selectedDay = Calendar.current.isDate(selectedDay ?? .distantPast, inSameDayAs: day) ? nil : day
-                    }
-                    if let selectedDay {
-                        HStack {
-                            Text("Showing \(selectedDay.formatted(date: .abbreviated, time: .omitted))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Button("Clear") {
-                                self.selectedDay = nil
-                            }
-                            .font(.caption.weight(.semibold))
-                            .buttonStyle(.bordered)
-                            .tint(AppTheme.accent)
-                        }
-                    }
-                }
-
-                Section("History") {
-                    ForEach(historyViewModel.filteredLogs(searchText: searchText, selectedDay: selectedDay), id: \.id) { log in
-                        NavigationLink {
-                            DailyCheckInView(date: log.date, existingLog: log)
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(log.date.formatted(date: .abbreviated, time: .omitted))
-                                    .font(.headline)
-                                if let notes = log.notes, !notes.isEmpty {
-                                    Text(notes)
-                                        .foregroundStyle(.secondary)
-                                } else {
-                                    Text("No notes yet")
-                                        .foregroundStyle(.tertiary)
-                                }
-                            }
-                        }
-                        .accessibilityIdentifier("history-log-cell-\((log.notes?.isEmpty == false ? log.notes! : log.date.formatted(date: .abbreviated, time: .omitted)))")
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                deletionState.confirmDelete(for: log)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            .accessibilityIdentifier("history-delete-button")
-                        }
-                    }
-                }
+                .padding(.horizontal, AppSpacing.md)
+                .padding(.top, AppSpacing.sm)
+                .padding(.bottom, AppSpacing.xl)
             }
+            .background(Color.appBackground)
             .navigationTitle("History")
             .searchable(text: $searchText)
-            .sheet(isPresented: $isPresentingUpgrade) {
-                ProUpgradeView(profile: profile)
-            }
-            .task {
-                guard reviews.isEmpty else { return }
-                let review = MonthlyReview(
-                    monthStart: Calendar.current.date(
-                        from: Calendar.current.dateComponents([.year, .month], from: .now)
-                    ) ?? .now
-                )
-                modelContext.insert(review)
-                try? modelContext.save()
-            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    if let csv = try? historyViewModel.csvExport() {
-                        ShareLink(
-                            item: csv,
-                            subject: Text("Nudge Notes CSV Export"),
-                            message: Text("Exported from Nudge Notes")
-                        ) {
-                            Label("Export CSV", systemImage: "square.and.arrow.up")
+                    HStack(spacing: AppSpacing.sm) {
+                        Button {
+                            isShowingMonthlyReview = true
+                        } label: {
+                            Image(systemName: "calendar.badge.checkmark")
+                                .foregroundColor(.appAccent)
                         }
-                    } else {
-                        Button("Export CSV") {
-                            exportMessage = "CSV export is available with Pro."
-                            isPresentingUpgrade = true
+                        if let csv = try? historyViewModel.csvExport() {
+                            ShareLink(
+                                item: csv,
+                                subject: Text("Nudge Notes CSV Export"),
+                                message: Text("Exported from Nudge Notes")
+                            ) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundColor(.appAccent)
+                            }
+                        } else {
+                            Button {
+                                exportMessage = "CSV export is available with Pro."
+                                isPresentingUpgrade = true
+                            } label: {
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundColor(.appAccent)
+                            }
                         }
-                        .buttonStyle(.bordered)
-                        .tint(AppTheme.accent)
                     }
                 }
+            }
+            .sheet(isPresented: $isShowingMonthlyReview) {
+                let review = currentMonthReview
+                if let review {
+                    MonthlyReviewView(review: review, dailyLogs: dailyLogs)
+                } else {
+                    Text("No monthly review for this month.")
+                        .font(AppFonts.body)
+                        .foregroundColor(.appTextSecondary)
+                        .padding()
+                }
+            }
+            .sheet(isPresented: $isPresentingUpgrade) {
+                ProUpgradeView(profile: profile)
             }
             .alert("Delete this log?", isPresented: Binding(
                 get: { deletionState.isShowingDeleteConfirmation },
                 set: { if !$0 { deletionState.cancelDelete() } }
             )) {
                 Button("Delete Log", role: .destructive) {
-                    if let pendingDeleteLog = deletionState.logPendingDeletion {
-                        modelContext.delete(pendingDeleteLog)
+                    if let log = deletionState.logPendingDeletion {
+                        modelContext.delete(log)
                         try? modelContext.save()
                     }
                     deletionState.cancelDelete()
                 }
-                Button("Cancel", role: .cancel) {
-                    deletionState.cancelDelete()
-                }
+                Button("Cancel", role: .cancel) { deletionState.cancelDelete() }
             } message: {
                 Text("This removes the selected daily log from history.")
             }
@@ -142,47 +115,283 @@ struct HistoryTabView: View {
             } message: {
                 Text(exportMessage ?? "")
             }
-        }
-    }
-}
-
-private struct CalendarHeatmapView: View {
-    let heatmap: [Date: Int]
-    let selectedDay: Date?
-    let onSelectDay: (Date) -> Void
-
-    var body: some View {
-        let days = currentMonthDays()
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-            ForEach(days, id: \.self) { day in
-                let count = heatmap[Calendar.current.startOfDay(for: day), default: 0]
-                let isSelected = selectedDay.map { Calendar.current.isDate($0, inSameDayAs: day) } ?? false
-                Button {
-                    onSelectDay(day)
-                } label: {
-                    Text(day.formatted(.dateTime.day()))
-                        .font(.caption)
-                        .frame(maxWidth: .infinity, minHeight: 28)
-                        .background(count == 0 ? Color.gray.opacity(0.12) : Color.green.opacity(min(Double(count) * 0.25, 0.9)))
-                        .overlay {
-                            if isSelected {
-                                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .stroke(Color.primary, lineWidth: 2)
-                            }
-                        }
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                }
-                .buttonStyle(.bordered)
-                .tint(isSelected ? AppTheme.accent : AppTheme.paper)
-                .accessibilityIdentifier("heatmap-day-\(Calendar.current.component(.day, from: day))")
-                .accessibilityLabel("\(day.formatted(date: .abbreviated, time: .omitted)), \(count) logs")
+            .task {
+                guard currentMonthReview == nil else { return }
+                let review = MonthlyReview(month: displayedMonth)
+                modelContext.insert(review)
+                try? modelContext.save()
             }
         }
     }
 
-    private func currentMonthDays() -> [Date] {
+    // MARK: - Calendar Card
+    private var calendarCard: some View {
+        AppCard {
+            VStack(spacing: AppSpacing.sm) {
+                // Month navigation
+                HStack {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) { navigateMonth(-1) }
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(AppFonts.bodyEmphasized)
+                            .foregroundColor(.appAccent)
+                            .frame(width: 36, height: 36)
+                    }
+                    .buttonStyle(.plain)
+
+                    Spacer()
+
+                    Text(displayedMonth.formatted(.dateTime.month(.wide).year()))
+                        .font(AppFonts.headline)
+                        .foregroundColor(.appText)
+
+                    Spacer()
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) { navigateMonth(1) }
+                    } label: {
+                        Image(systemName: "chevron.right")
+                            .font(AppFonts.bodyEmphasized)
+                            .foregroundColor(.appAccent)
+                            .frame(width: 36, height: 36)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                // Day-of-week headers (Sun–Sat)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 4) {
+                    ForEach(Array(["S", "M", "T", "W", "T", "F", "S"].enumerated()), id: \.offset) { _, letter in
+                        Text(letter)
+                            .font(AppFonts.footnote)
+                            .foregroundColor(.appTextSecondary)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+
+                // Calendar day grid
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 4) {
+                    // Leading empty cells
+                    ForEach(0..<firstWeekdayOffset, id: \.self) { _ in
+                        Color.clear.frame(height: 38)
+                    }
+                    // Day cells
+                    ForEach(calendarDays, id: \.self) { day in
+                        calendarDayCell(day: day)
+                    }
+                }
+            }
+        }
+    }
+
+    private func calendarDayCell(day: Date) -> some View {
         let calendar = Calendar.current
-        let interval = calendar.dateInterval(of: .month, for: .now) ?? DateInterval(start: .now, end: .now)
+        let isLogged = loggedDaySet.contains(calendar.startOfDay(for: day))
+        let isSelected = selectedDay.map { calendar.isDate($0, inSameDayAs: day) } ?? false
+        let isToday = calendar.isDateInToday(day)
+
+        return Button {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                selectedDay = isSelected ? nil : day
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(
+                        isSelected ? Color.appAccent :
+                        isToday ? Color.appAccent.opacity(0.12) :
+                        Color.clear
+                    )
+                    .frame(width: 34, height: 34)
+
+                VStack(spacing: 2) {
+                    Text(day.formatted(.dateTime.day()))
+                        .font(AppFonts.footnote)
+                        .foregroundColor(isSelected ? .white : .appText)
+
+                    Circle()
+                        .fill(isLogged ?
+                              (isSelected ? Color.white : Color.appAccent) :
+                              Color.clear)
+                        .frame(width: 4, height: 4)
+                }
+            }
+            .frame(height: 38)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("calendar-day-\(Calendar.current.component(.day, from: day))")
+        .accessibilityLabel("\(day.formatted(date: .abbreviated, time: .omitted))\(isLogged ? ", logged" : "")")
+    }
+
+    // MARK: - Day Detail Card
+    private func dayDetailCard(for day: Date) -> some View {
+        let log = dailyLogs.first { Calendar.current.isDate($0.date, inSameDayAs: day) }
+        return AppCard {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                HStack {
+                    Text(day.formatted(.dateTime.month(.wide).day().year()))
+                        .font(AppFonts.headline)
+                        .foregroundColor(.appText)
+                    Spacer()
+                    HStack(spacing: AppSpacing.sm) {
+                        NavigationLink {
+                            DailyCheckInView(date: day, existingLog: log)
+                        } label: {
+                            Text("Edit Day")
+                                .font(AppFonts.captionEmphasized)
+                                .foregroundColor(.appAccent)
+                                .padding(.horizontal, AppSpacing.sm)
+                                .padding(.vertical, AppSpacing.xs)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                        .stroke(Color.appAccent, lineWidth: 1)
+                                )
+                        }
+                        Button {
+                            withAnimation { selectedDay = nil }
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(AppFonts.footnote)
+                                .foregroundColor(.appTextSecondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Divider()
+
+                if let log {
+                    LazyVGrid(
+                        columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
+                        spacing: AppSpacing.sm
+                    ) {
+                        statCell(icon: "💧", label: "Water",
+                                 value: log.waterGlasses.map { "\($0) gl" } ?? "–")
+                        statCell(icon: "🏃", label: "Movement",
+                                 value: log.movement == true ? "Active" : (log.movement == false ? "Rest" : "–"))
+                        statCell(icon: "🍽️", label: "Meals",
+                                 value: "\(log.meals.count)")
+                        statCell(icon: "😊", label: "Mood",
+                                 value: log.mood.map { moodLabel($0) } ?? "–")
+                        statCell(icon: "📏", label: "WHR",
+                                 value: whrString(log: log))
+                        statCell(icon: "📝", label: "Notes",
+                                 value: (log.notes?.isEmpty == false) ? "Yes" : "–")
+                    }
+
+                    if let notes = log.notes, !notes.isEmpty {
+                        Text(notes)
+                            .font(AppFonts.caption)
+                            .foregroundColor(.appTextSecondary)
+                            .padding(.top, AppSpacing.xs)
+                            .lineLimit(3)
+                    }
+                } else {
+                    Text("No data logged for this day.")
+                        .font(AppFonts.caption)
+                        .foregroundColor(.appTextSecondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, AppSpacing.xs)
+                }
+            }
+        }
+    }
+
+    private func statCell(icon: String, label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 3) {
+                Text(icon).font(.system(size: 12))
+                Text(label)
+                    .font(AppFonts.footnote)
+                    .foregroundColor(.appTextSecondary)
+            }
+            Text(value)
+                .font(AppFonts.captionEmphasized)
+                .foregroundColor(.appText)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func whrString(log: DailyLog) -> String {
+        guard let waist = log.waist, let hips = log.hips, hips > 0 else { return "–" }
+        return String(format: "%.2f", waist / hips)
+    }
+
+    private func moodLabel(_ mood: Int) -> String {
+        switch mood {
+        case 1: return "😞"
+        case 2: return "😕"
+        case 3: return "😐"
+        case 4: return "🙂"
+        case 5: return "😄"
+        default: return "\(mood)"
+        }
+    }
+
+    // MARK: - History List
+    private var historyListSection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            Text("All Logs")
+                .font(AppFonts.headline)
+                .foregroundColor(.appText)
+                .padding(.horizontal, AppSpacing.xs)
+
+            let logs = historyViewModel.filteredLogs(searchText: searchText)
+            if logs.isEmpty {
+                AppCard {
+                    Text("No logs yet. Start by checking in today!")
+                        .font(AppFonts.caption)
+                        .foregroundColor(.appTextSecondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, AppSpacing.sm)
+                }
+            } else {
+                ForEach(logs, id: \.id) { log in
+                    AppCard {
+                        NavigationLink {
+                            DailyCheckInView(date: log.date, existingLog: log)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                                    Text(log.date.formatted(date: .abbreviated, time: .omitted))
+                                        .font(AppFonts.bodyEmphasized)
+                                        .foregroundColor(.appText)
+                                    if let notes = log.notes, !notes.isEmpty {
+                                        Text(notes)
+                                            .font(AppFonts.caption)
+                                            .foregroundColor(.appTextSecondary)
+                                            .lineLimit(1)
+                                    } else {
+                                        Text("No notes")
+                                            .font(AppFonts.footnote)
+                                            .foregroundColor(.appTextSecondary.opacity(0.6))
+                                    }
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(AppFonts.footnote)
+                                    .foregroundColor(.appTextSecondary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .accessibilityIdentifier("history-log-cell-\(log.date.formatted(date: .abbreviated, time: .omitted))")
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            deletionState.confirmDelete(for: log)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Calendar Helpers
+    private var calendarDays: [Date] {
+        let calendar = Calendar.current
+        guard let interval = calendar.dateInterval(of: .month, for: displayedMonth) else { return [] }
         var days: [Date] = []
         var current = interval.start
         while current < interval.end {
@@ -190,5 +399,27 @@ private struct CalendarHeatmapView: View {
             current = calendar.date(byAdding: .day, value: 1, to: current) ?? interval.end
         }
         return days
+    }
+
+    private var firstWeekdayOffset: Int {
+        var cal = Calendar(identifier: .gregorian)
+        cal.firstWeekday = 1 // Sunday
+        let weekday = cal.component(.weekday, from: displayedMonth)
+        return max(weekday - 1, 0)
+    }
+
+    private func navigateMonth(_ offset: Int) {
+        guard let newMonth = Calendar.current.date(byAdding: .month, value: offset, to: displayedMonth) else { return }
+        displayedMonth = newMonth
+        selectedDay = nil
+        // Ensure a review exists for the new month
+        let alreadyExists = reviews.contains {
+            Calendar.current.isDate($0.month, equalTo: newMonth, toGranularity: .month)
+        }
+        if !alreadyExists {
+            let review = MonthlyReview(month: newMonth)
+            modelContext.insert(review)
+            try? modelContext.save()
+        }
     }
 }

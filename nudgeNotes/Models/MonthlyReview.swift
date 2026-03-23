@@ -4,22 +4,25 @@ import SwiftData
 @Model
 final class MonthlyReview {
     @Attribute(.unique) var id: UUID
-    var monthStart: Date
-    var reflection: String
-    var summary: String
-    var nextMonthFocus: String
+    var month: Date
+    var wentWell: String
+    var challenges: String
+    var changeForNextMonth: String
+    var createdAt: Date
+    var updatedAt: Date
 
     init(
-        id: UUID = UUID(),
-        monthStart: Date,
-        reflection: String = "",
-        summary: String = "",
-        nextMonthFocus: String = ""
+        month: Date,
+        wentWell: String = "",
+        challenges: String = "",
+        changeForNextMonth: String = ""
     ) {
-        self.id = id
-        self.monthStart = monthStart
-        self.reflection = reflection
-        self.summary = summary
-        self.nextMonthFocus = nextMonthFocus
+        self.id = UUID()
+        self.month = month
+        self.wentWell = wentWell
+        self.challenges = challenges
+        self.changeForNextMonth = changeForNextMonth
+        self.createdAt = Date()
+        self.updatedAt = Date()
     }
 }
