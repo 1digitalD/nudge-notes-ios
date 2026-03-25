@@ -24,6 +24,22 @@ struct DailyCheckInView: View {
     // Meal note focus
     @State private var focusedMealID: UUID?
 
+    // Focus state for field management
+    enum Field: Hashable {
+        case notes
+        case steps
+        case mealNote(UUID)
+    }
+    @FocusState private var focusedField: Field?
+
+    // WHR data for daily display
+    @Query(sort: \WeeklyMetrics.date, order: .reverse) private var weeklyMetrics: [WeeklyMetrics]
+    @State private var showWeeklyWeighIn = false
+
+    private var latestWHR: WeeklyMetrics? {
+        weeklyMetrics.first
+    }
+
     init(date: Date, existingLog: DailyLog? = nil) {
         self.date = date
         self.existingLog = existingLog
@@ -35,6 +51,7 @@ struct DailyCheckInView: View {
                 if let log = dailyLog {
                     ScrollView {
                         VStack(spacing: AppSpacing.md) {
+                            whrCard
                             sleepSection(log: log)
                             waterSection(log: log)
                             movementSection(log: log)
@@ -47,6 +64,7 @@ struct DailyCheckInView: View {
                         .padding(.bottom, AppSpacing.xl)
                     }
                     .background(Color.appBackground)
+                    .scrollDismissesKeyboard(.interactively)
                 } else {
                     ProgressView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -63,7 +81,7 @@ struct DailyCheckInView: View {
                     if savedIndicator {
                         HStack(spacing: 4) {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(Color(hex: "#4CAF50"))
+                                .foregroundStyle(Color.appSuccess)
                             Text("Saved")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -254,9 +272,12 @@ struct DailyCheckInView: View {
                                 .foregroundStyle(Color.appText)
                             TextField("0", text: $stepsText)
                                 .keyboardType(.numberPad)
+                                .autocorrectionDisabled()
+                                .textInputAutocapitalization(.never)
                                 .multilineTextAlignment(.leading)
                                 .font(AppFonts.headline)
                                 .foregroundStyle(Color.appText)
+                                .focused($focusedField, equals: .steps)
                                 .onChange(of: stepsText) { _, val in
                                     log.steps = Int(val)
                                     scheduleAutoSave()
@@ -446,6 +467,7 @@ struct DailyCheckInView: View {
                         ))
                         .font(AppFonts.caption)
                         .textFieldStyle(.roundedBorder)
+                        .focused($focusedField, equals: .mealNote(meal.id))
                         .onChange(of: meal.notes) { _, _ in scheduleAutoSave() }
                     }
                 }
@@ -548,9 +570,71 @@ struct DailyCheckInView: View {
                 .lineLimit(3...8)
                 .font(AppFonts.body)
                 .foregroundStyle(Color.appText)
+                .focused($focusedField, equals: .notes)
                 .accessibilityIdentifier("notes-field")
             }
         }
+    }
+
+    // MARK: - WHR Card
+
+    @ViewBuilder
+    private var whrCard: some View {
+        if let metrics = latestWHR {
+            AppCard {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Current WHR")
+                            .font(AppFonts.caption)
+                            .foregroundStyle(Color.appTextSecondary)
+
+                        Text(String(format: "%.2f", metrics.whr))
+                            .font(AppFonts.title)
+                            .foregroundStyle(whrZoneColor(metrics.whr))
+
+                        Text(whrZoneLabel(metrics.whr))
+                            .font(AppFonts.caption)
+                            .foregroundStyle(whrZoneColor(metrics.whr))
+                    }
+
+                    Spacer()
+
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text("Last Weigh-In")
+                            .font(AppFonts.caption)
+                            .foregroundStyle(Color.appTextSecondary)
+                        Text(metrics.date, style: .date)
+                            .font(AppFonts.caption)
+                            .foregroundStyle(Color.appTextSecondary)
+
+                        if Calendar.current.dateComponents([.day], from: metrics.date, to: Date()).day ?? 0 >= 7 {
+                            Button {
+                                showWeeklyWeighIn = true
+                            } label: {
+                                Text("Update Now")
+                                    .font(AppFonts.captionEmphasized)
+                                    .foregroundStyle(Color.appAccent)
+                            }
+                        }
+                    }
+                }
+            }
+            .sheet(isPresented: $showWeeklyWeighIn) {
+                WeeklyWeighInView(date: Date())
+            }
+        }
+    }
+
+    private func whrZoneColor(_ whr: Double) -> Color {
+        if whr < 0.80 { return Color.appSuccess }
+        if whr < 0.85 { return Color.appWarning }
+        return Color.appDanger
+    }
+
+    private func whrZoneLabel(_ whr: Double) -> String {
+        if whr < 0.80 { return "Healthy" }
+        if whr < 0.85 { return "Elevated" }
+        return "High Risk"
     }
 
     // MARK: - Helpers
@@ -610,12 +694,12 @@ struct DailyCheckInView: View {
         if let s = log.steps { stepsText = "\(s)" }
     }
 
-    // MARK: - Auto-Save (debounced 1s)
+    // MARK: - Auto-Save (debounced 0.3s)
 
     private func scheduleAutoSave() {
         saveTask?.cancel()
         saveTask = Task {
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            try? await Task.sleep(nanoseconds: 300_000_000)
             guard !Task.isCancelled else { return }
             await persistSave()
         }
@@ -638,7 +722,7 @@ struct DailyCheckInView: View {
 
 // MARK: - Meal Photo Button
 
-private struct MealPhotoButton: View {
+struct MealPhotoButton: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var meal: MealLog
     let onChanged: () -> Void

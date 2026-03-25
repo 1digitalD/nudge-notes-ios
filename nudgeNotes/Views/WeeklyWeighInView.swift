@@ -28,9 +28,9 @@ struct WeeklyWeighInView: View {
 
     private var whrZone: (color: Color, label: String) {
         guard let whr = whr else { return (.gray, "Enter measurements") }
-        if whr < 0.80 { return (Color(hex: "#4CAF50"), "Healthy") }
-        if whr < 0.85 { return (Color(hex: "#FFC107"), "Elevated") }
-        return (Color(hex: "#F44336"), "High Risk")
+        if whr < 0.80 { return (Color.appSuccess, "Healthy") }
+        if whr < 0.85 { return (Color.appWarning, "Elevated") }
+        return (Color.appDanger, "High Risk")
     }
 
     var body: some View {
@@ -133,6 +133,8 @@ struct WeeklyWeighInView: View {
                     Spacer()
                     TextField("165", text: $weight)
                         .keyboardType(.decimalPad)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
                         .multilineTextAlignment(.trailing)
                         .frame(width: 80)
                     Text("lbs")
@@ -147,6 +149,8 @@ struct WeeklyWeighInView: View {
                     Spacer()
                     TextField("32", text: $waist)
                         .keyboardType(.decimalPad)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
                         .multilineTextAlignment(.trailing)
                         .frame(width: 80)
                     Text("in")
@@ -161,6 +165,8 @@ struct WeeklyWeighInView: View {
                     Spacer()
                     TextField("38", text: $hips)
                         .keyboardType(.decimalPad)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
                         .multilineTextAlignment(.trailing)
                         .frame(width: 80)
                     Text("in")
@@ -179,7 +185,7 @@ struct WeeklyWeighInView: View {
                         Spacer()
                         Text(String(format: "%+.1f lbs", diff))
                             .font(AppFonts.captionEmphasized)
-                            .foregroundStyle(diff <= 0 ? Color(hex: "#4CAF50") : Color(hex: "#FF9800"))
+                            .foregroundStyle(diff <= 0 ? Color.appSuccess : Color.appWarning)
                     }
                 }
             }
@@ -274,7 +280,12 @@ struct WeeklyWeighInView: View {
         )
 
         modelContext.insert(metrics)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            print("✅ WeeklyMetrics saved: weight=\(w), waist=\(wa), hips=\(hi), WHR=\(calculatedWhr)")
+        } catch {
+            print("❌ Failed to save WeeklyMetrics: \(error)")
+        }
         dismiss()
     }
 }
@@ -330,17 +341,17 @@ struct MeasurementGuideView: View {
                                 .font(AppFonts.headline)
 
                             HStack {
-                                Circle().fill(Color(hex: "#4CAF50")).frame(width: 12, height: 12)
+                                Circle().fill(Color.appSuccess).frame(width: 12, height: 12)
                                 Text("Below 0.80 — Healthy")
                                     .font(AppFonts.body)
                             }
                             HStack {
-                                Circle().fill(Color(hex: "#FFC107")).frame(width: 12, height: 12)
+                                Circle().fill(Color.appWarning).frame(width: 12, height: 12)
                                 Text("0.80 - 0.85 — Elevated")
                                     .font(AppFonts.body)
                             }
                             HStack {
-                                Circle().fill(Color(hex: "#F44336")).frame(width: 12, height: 12)
+                                Circle().fill(Color.appDanger).frame(width: 12, height: 12)
                                 Text("Above 0.85 — High Risk")
                                     .font(AppFonts.body)
                             }
