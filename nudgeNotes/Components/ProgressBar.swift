@@ -8,8 +8,8 @@ struct ProgressBar: View {
 
     var barColor: Color {
         switch progress {
-        case 1.0...: return Color(hex: "#4CAF50")  // Green — goal met
-        case 0.5...: return AppTheme.accent          // Blue — halfway+
+        case 1.0...: return Color.appSuccess  // Green — goal met
+        case 0.5...: return Color.appAccent  // Blue — halfway+
         default:     return Color.gray.opacity(0.5)  // Gray — under 50%
         }
     }
@@ -51,7 +51,7 @@ struct ProgressLabel: View {
                 .foregroundStyle(.secondary)
             Text("\(min(percentage, 100))%")
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(percentage >= 100 ? Color(hex: "#4CAF50") : .secondary)
+                .foregroundStyle(percentage >= 100 ? Color.appSuccess : .secondary)
         }
     }
 

@@ -33,11 +33,11 @@ struct MovementSegmentView: View {
                             .onSubmit { commitSteps() }
                         Button("Done") { commitSteps() }
                             .font(.subheadline)
-                            .foregroundStyle(AppTheme.accent)
+                            .foregroundStyle(Color.appAccent)
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
-                    .background(AppTheme.paper.opacity(0.5))
+                    .background(Color.appCard.opacity(0.5))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 } else {
                     Button {
@@ -47,7 +47,7 @@ struct MovementSegmentView: View {
                         HStack {
                             Text("Steps: \(steps)")
                                 .font(.subheadline)
-                                .foregroundStyle(AppTheme.ink)
+                                .foregroundStyle(Color.appText)
                             Image(systemName: "pencil")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -70,8 +70,8 @@ struct MovementSegmentView: View {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
-                    .background(AppTheme.accent.opacity(0.12))
-                    .foregroundStyle(AppTheme.accent)
+                    .background(Color.appAccent.opacity(0.12))
+                    .foregroundStyle(Color.appAccent)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .accessibilityLabel("Add \(settings.stepQuickPreset) steps")
@@ -87,7 +87,7 @@ struct MovementSegmentView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(workout.workoutTypeName)
                                     .font(.subheadline)
-                                    .foregroundStyle(AppTheme.ink)
+                                    .foregroundStyle(Color.appText)
                                 HStack(spacing: 4) {
                                     Text("\(workout.duration) min")
                                     Text("·")
@@ -122,7 +122,7 @@ struct MovementSegmentView: View {
                 }
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
-                .background(AppTheme.paper.opacity(0.5))
+                .background(Color.appCard.opacity(0.5))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
 
@@ -138,8 +138,8 @@ struct MovementSegmentView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(AppTheme.accent.opacity(0.12))
-                .foregroundStyle(AppTheme.accent)
+                .background(Color.appAccent.opacity(0.12))
+                .foregroundStyle(Color.appAccent)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
             .accessibilityIdentifier("add-workout-button")
@@ -236,7 +236,7 @@ struct AddWorkoutSheet: View {
                         dismiss()
                     }
                     .fontWeight(.semibold)
-                    .foregroundStyle(AppTheme.accent)
+                    .foregroundStyle(Color.appAccent)
                     .accessibilityIdentifier("confirm-add-workout-button")
                 }
             }

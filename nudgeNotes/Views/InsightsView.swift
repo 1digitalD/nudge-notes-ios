@@ -114,11 +114,11 @@ struct InsightsView: View {
                 isPresentingUpgrade = true
             }
             .buttonStyle(.borderedProminent)
-            .tint(AppTheme.accent)
+            .tint(Color.appAccent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(24)
-        .background(AppTheme.background)
+        .background(Color.appBackground)
     }
 
     private func summaryRow(title: String, value: String) -> some View {

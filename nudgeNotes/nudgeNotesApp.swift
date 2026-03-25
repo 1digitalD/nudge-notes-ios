@@ -29,9 +29,12 @@ struct NudgeNotesApp: App {
         container = PersistenceController.makeContainer()
     }
 
+    @AppStorage("useDarkMode") private var useDarkMode = false
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(useDarkMode ? .dark : .light)
         }
         .modelContainer(container)
     }

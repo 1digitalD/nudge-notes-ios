@@ -50,7 +50,7 @@ struct WHRCalculatorView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.accent)
+                    .tint(Color.appAccent)
                     .accessibilityIdentifier("save-whr-button")
                     .accessibilityLabel("Save WHR entry")
                 }

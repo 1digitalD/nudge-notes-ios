@@ -24,7 +24,7 @@ struct MoodSegmentView: View {
                                 HStack(spacing: 4) {
                                     Text(entry.label)
                                         .font(.subheadline)
-                                        .foregroundStyle(AppTheme.ink)
+                                        .foregroundStyle(Color.appText)
                                     Text("·")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
@@ -61,7 +61,7 @@ struct MoodSegmentView: View {
                 }
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
-                .background(AppTheme.paper.opacity(0.5))
+                .background(Color.appCard.opacity(0.5))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
 
@@ -76,8 +76,8 @@ struct MoodSegmentView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(AppTheme.accent.opacity(0.12))
-                .foregroundStyle(AppTheme.accent)
+                .background(Color.appAccent.opacity(0.12))
+                .foregroundStyle(Color.appAccent)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
             .accessibilityIdentifier("log-mood-button")
@@ -113,7 +113,7 @@ struct AddMoodSheet: View {
                         .font(.system(size: 56))
                     Text(moodLabels[moodValue - 1])
                         .font(.title3.weight(.medium))
-                        .foregroundStyle(AppTheme.ink)
+                        .foregroundStyle(Color.appText)
                 }
                 .padding(.top, 24)
 
@@ -129,7 +129,7 @@ struct AddMoodSheet: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 8)
-                            .background(moodValue == value ? AppTheme.accent.opacity(0.1) : Color.clear)
+                            .background(moodValue == value ? Color.appAccent.opacity(0.1) : Color.clear)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         .buttonStyle(.plain)
@@ -146,7 +146,7 @@ struct AddMoodSheet: View {
                     TextField("What's on your mind?", text: $notes, axis: .vertical)
                         .lineLimit(2...5)
                         .padding(12)
-                        .background(AppTheme.paper.opacity(0.5))
+                        .background(Color.appCard.opacity(0.5))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .padding(.horizontal, 16)
                 }
@@ -169,7 +169,7 @@ struct AddMoodSheet: View {
                         dismiss()
                     }
                     .fontWeight(.semibold)
-                    .foregroundStyle(AppTheme.accent)
+                    .foregroundStyle(Color.appAccent)
                     .accessibilityIdentifier("confirm-log-mood-button")
                 }
             }

@@ -27,7 +27,7 @@ struct PhotoLoggingView: View {
                         saveSamplePhoto()
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.accent)
+                    .tint(Color.appAccent)
                     .accessibilityLabel("Save sample photo")
                 }
             }

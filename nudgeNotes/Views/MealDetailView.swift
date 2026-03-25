@@ -35,7 +35,7 @@ struct MealDetailView: View {
                 Button("Add Photo") {
                 }
                 .buttonStyle(.bordered)
-                .tint(AppTheme.accent)
+                .tint(Color.appAccent)
                 .disabled(true)
             } header: {
                 Text("Photos")
@@ -51,7 +51,7 @@ struct MealDetailView: View {
                     dismiss()
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(AppTheme.accent)
+                .tint(Color.appAccent)
                 .accessibilityIdentifier("meal-save-button")
             }
         }

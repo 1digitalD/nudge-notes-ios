@@ -27,7 +27,7 @@ struct OnboardingFlowView: View {
             }
             .padding(24)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(AppTheme.background.ignoresSafeArea())
+            .background(Color.appBackground.ignoresSafeArea())
         }
     }
 
@@ -57,7 +57,7 @@ struct OnboardingFlowView: View {
                 .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ProgressView(value: Double(viewModel.step.rawValue), total: Double(OnboardingStep.allCases.count - 1))
-                .tint(AppTheme.accent)
+                .tint(Color.appAccent)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -70,7 +70,7 @@ struct OnboardingFlowView: View {
                 .padding(.vertical, 6)
         }
         .buttonStyle(.borderedProminent)
-        .tint(viewModel.canContinue ? AppTheme.accent : .gray.opacity(0.35))
+        .tint(viewModel.canContinue ? Color.appAccent : .gray.opacity(0.35))
         .disabled(!viewModel.canContinue)
         .accessibilityIdentifier(buttonIdentifier)
         .accessibilityLabel(buttonTitle)
@@ -181,7 +181,7 @@ private struct OnboardingProfileView: View {
                 }
             }
             .padding()
-            .background(AppTheme.cardBackground)
+            .background(Color.appCard)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
             if let weight = Double(viewModel.weightText), weight > 0 {
@@ -310,7 +310,7 @@ private struct OnboardingGoalsView: View {
             }
         }
         .padding()
-        .background(AppTheme.cardBackground)
+        .background(Color.appCard)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
@@ -347,7 +347,7 @@ private struct OnboardingHealthKitView: View {
                     permissionRow(icon: "scalemass", label: "Weight (optional)")
                 }
                 .padding()
-                .background(AppTheme.cardBackground)
+                .background(Color.appCard)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
                 if !healthKit.isAuthorized {
@@ -364,7 +364,7 @@ private struct OnboardingHealthKitView: View {
                 } else {
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(Color(hex: "#4CAF50"))
+                            .foregroundStyle(Color.appSuccess)
                         Text("Connected to Apple Health")
                             .font(AppFonts.bodyEmphasized)
                     }
@@ -418,15 +418,15 @@ private struct OnboardingHealthKitView: View {
             Spacer()
             if status == .granted {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color(hex: "#4CAF50"))
+                    .foregroundStyle(Color.appSuccess)
             } else {
                 Button("Allow") { action() }
                     .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.accent)
+                    .tint(Color.appAccent)
             }
         }
         .padding()
-        .background(AppTheme.cardBackground)
+        .background(Color.appCard)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
@@ -449,7 +449,7 @@ private struct OnboardingCompletionView: View {
                 finish()
             }
             .buttonStyle(.borderedProminent)
-            .tint(AppTheme.accent)
+            .tint(Color.appAccent)
             .accessibilityIdentifier("finish-onboarding-button")
             .accessibilityLabel("Finish onboarding")
         }

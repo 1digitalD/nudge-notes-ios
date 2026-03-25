@@ -16,14 +16,14 @@ struct CollapsibleSegment<Header: View, Content: View>: View {
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.accent)
+                        .foregroundStyle(Color.appAccent)
                         .frame(width: 14)
                         .padding(.top, 2)
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(AppTheme.ink)
+                            .foregroundStyle(Color.appText)
 
                         if !isExpanded {
                             header()
@@ -53,7 +53,7 @@ struct CollapsibleSegment<Header: View, Content: View>: View {
             Divider()
                 .padding(.horizontal, 16)
         }
-        .background(AppTheme.cardBackground)
+        .background(Color.appCard)
     }
 }
 

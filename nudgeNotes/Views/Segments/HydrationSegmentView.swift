@@ -53,7 +53,7 @@ struct HydrationSegmentView: View {
                                 .frame(width: 60, alignment: .leading)
                             Text("\(formatAmount(log.amount)) \(log.unit.label)")
                                 .font(.subheadline)
-                                .foregroundStyle(AppTheme.ink)
+                                .foregroundStyle(Color.appText)
                             Spacer()
                             Button {
                                 withAnimation {
@@ -76,7 +76,7 @@ struct HydrationSegmentView: View {
                 }
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
-                .background(AppTheme.paper.opacity(0.5))
+                .background(Color.appCard.opacity(0.5))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
 
@@ -114,7 +114,7 @@ struct HydrationSegmentView: View {
                     } label: {
                         Text("\(settings.waterGoalGlasses) glasses")
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppTheme.accent)
+                            .foregroundStyle(Color.appAccent)
                     }
                 }
             }

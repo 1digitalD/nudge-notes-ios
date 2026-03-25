@@ -22,11 +22,11 @@ struct WHRLineChart: View {
             }
 
             RuleMark(y: .value("Healthy", 0.80))
-                .foregroundStyle(Color(hex: "#4CAF50").opacity(0.3))
+                .foregroundStyle(Color.appSuccess.opacity(0.3))
                 .lineStyle(StrokeStyle(dash: [5, 5]))
 
             RuleMark(y: .value("Elevated", 0.85))
-                .foregroundStyle(Color(hex: "#FFC107").opacity(0.3))
+                .foregroundStyle(Color.appWarning.opacity(0.3))
                 .lineStyle(StrokeStyle(dash: [5, 5]))
         }
         .chartYScale(domain: .automatic(includesZero: false))

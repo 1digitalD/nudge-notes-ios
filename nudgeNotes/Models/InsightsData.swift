@@ -71,7 +71,7 @@ struct WeightChange {
     }
 
     var color: Color {
-        pounds < 0 ? Color(hex: "#4CAF50") : Color(hex: "#F44336")
+        pounds < 0 ? Color.appSuccess : Color.appDanger
     }
 
     var icon: String {

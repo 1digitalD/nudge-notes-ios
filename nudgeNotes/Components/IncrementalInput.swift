@@ -14,7 +14,7 @@ struct IncrementalInput: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(label)
                     .font(.subheadline)
-                    .foregroundStyle(AppTheme.ink)
+                    .foregroundStyle(Color.appText)
                 ProgressLabel(current: currentValue, goal: goal, unit: unit)
             }
 
@@ -29,8 +29,8 @@ struct IncrementalInput: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(AppTheme.accent.opacity(0.12))
-                .foregroundStyle(AppTheme.accent)
+                .background(Color.appAccent.opacity(0.12))
+                .foregroundStyle(Color.appAccent)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
             .accessibilityLabel("Add \(presetLabel) \(unit)")

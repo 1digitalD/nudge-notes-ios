@@ -29,6 +29,13 @@ extension Color {
     static let appTextSecondary = Color("AppTextSecondary")
     static let appAccent = Color("AppAccent")
     static let appBorder = Color("AppBorder")
+
+    // Semantic status colors (adaptive light/dark)
+    static let appSuccess = Color("AppSuccess")
+    static let appWarning = Color("AppWarning")
+    static let appDanger = Color("AppDanger")
+    static let appTeal = Color("AppTeal")
+    static let appMint = Color("AppMint")
 }
 
 // MARK: - App Colors (explicit hex values, use for preview/non-adaptive)
@@ -80,15 +87,21 @@ struct AppFonts {
 
 // MARK: - Spacing
 struct AppSpacing {
-    static let xs: CGFloat = 4
-    static let sm: CGFloat = 8
+    static let xs: CGFloat = 6
+    static let sm: CGFloat = 10
     static let md: CGFloat = 16
     static let lg: CGFloat = 24
     static let xl: CGFloat = 32
     static let xxl: CGFloat = 48
 
-    static let cornerRadius: CGFloat = 12
-    static let cardPadding: CGFloat = 16
+    static let cornerRadius: CGFloat = 16
+    static let cardPadding: CGFloat = 18
     static let sectionSpacing: CGFloat = 24
     static let screenPadding: CGFloat = 20
+}
+
+// MARK: - Animation
+struct AppAnimation {
+    static let spring = Animation.spring(response: 0.3, dampingFraction: 0.7)
+    static let springLight = Animation.spring(response: 0.25, dampingFraction: 0.8)
 }

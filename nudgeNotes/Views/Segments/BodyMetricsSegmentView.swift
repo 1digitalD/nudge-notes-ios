@@ -69,7 +69,7 @@ struct BodyMetricsSegmentView: View {
                     Spacer()
                     Text(String(format: "%.2f", ratio))
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(AppTheme.ink)
+                        .foregroundStyle(Color.appText)
                     Text("·")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -106,14 +106,14 @@ struct BodyMetricsSegmentView: View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(AppTheme.ink)
+                .foregroundStyle(Color.appText)
             Spacer()
             TextField(placeholder, text: text)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
                 .frame(width: 80)
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(AppTheme.ink)
+                .foregroundStyle(Color.appText)
                 .onSubmit(onCommit)
                 .onChange(of: text.wrappedValue) { _, _ in onCommit() }
         }
@@ -121,9 +121,9 @@ struct BodyMetricsSegmentView: View {
 
     private func whrColor(_ category: String) -> Color {
         switch category {
-        case "Healthy": return Color(hex: "#4CAF50")
-        case "Moderate": return Color(hex: "#FF9800")
-        default: return Color(hex: "#F44336")
+        case "Healthy": return Color.appSuccess
+        case "Moderate": return Color.appWarning
+        default: return Color.appDanger
         }
     }
 

@@ -27,7 +27,7 @@ struct NutritionSegmentView: View {
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(meal.mealType.rawValue)
                                             .font(.subheadline)
-                                            .foregroundStyle(AppTheme.ink)
+                                            .foregroundStyle(Color.appText)
                                         HStack(spacing: 4) {
                                             Text(meal.timestamp, style: .time)
                                                 .font(.caption)
@@ -75,7 +75,7 @@ struct NutritionSegmentView: View {
                 }
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
-                .background(AppTheme.paper.opacity(0.5))
+                .background(Color.appCard.opacity(0.5))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
 
@@ -94,8 +94,8 @@ struct NutritionSegmentView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(AppTheme.accent.opacity(0.12))
-                .foregroundStyle(AppTheme.accent)
+                .background(Color.appAccent.opacity(0.12))
+                .foregroundStyle(Color.appAccent)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
             .accessibilityIdentifier("add-meal-button")

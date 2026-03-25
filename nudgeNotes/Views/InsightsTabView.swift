@@ -175,9 +175,9 @@ private struct WeeklySummaryCard: View {
     @ViewBuilder
     private func progressDot(_ percentage: Double) -> some View {
         Circle()
-            .fill(percentage >= 0.8 ? Color(hex: "#4CAF50") :
-                  percentage >= 0.6 ? Color(hex: "#FFC107") :
-                  Color(hex: "#F44336"))
+            .fill(percentage >= 0.8 ? Color.appSuccess :
+                  percentage >= 0.6 ? Color.appWarning :
+                  Color.appDanger)
             .frame(width: 8, height: 8)
     }
 
@@ -235,13 +235,13 @@ private struct MonthlyProgressCard: View {
                                     .foregroundStyle(Color.appTextSecondary)
                                 Text(String(format: "%.2f", change))
                                     .font(AppFonts.bodyEmphasized)
-                                    .foregroundStyle(change < 0 ? Color(hex: "#4CAF50") : Color(hex: "#F44336"))
+                                    .foregroundStyle(change < 0 ? Color.appSuccess : Color.appDanger)
                                 if change < 0 {
                                     Text("↓")
-                                        .foregroundStyle(Color(hex: "#4CAF50"))
+                                        .foregroundStyle(Color.appSuccess)
                                 } else if change > 0 {
                                     Text("↑")
-                                        .foregroundStyle(Color(hex: "#F44336"))
+                                        .foregroundStyle(Color.appDanger)
                                 }
                                 Spacer()
                             }
