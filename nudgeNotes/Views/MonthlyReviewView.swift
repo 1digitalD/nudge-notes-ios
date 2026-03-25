@@ -7,7 +7,10 @@ struct MonthlyReviewView: View {
     @Bindable var review: MonthlyReview
     let dailyLogs: [DailyLog]
 
+    @Query(sort: \WeeklyMetrics.date, order: .reverse) private var weeklyMetrics: [WeeklyMetrics]
     @State private var saveTask: Task<Void, Never>?
+
+    private let settings = UserSettings()
 
     private var monthlyLogs: [DailyLog] {
         let calendar = Calendar.current
@@ -41,6 +44,8 @@ struct MonthlyReviewView: View {
             ScrollView {
                 VStack(spacing: AppSpacing.sectionSpacing) {
                     statsCard
+                    winsCard
+                    focusCard
                     reflectionCard
                 }
                 .padding(.horizontal, AppSpacing.md)
@@ -93,6 +98,62 @@ struct MonthlyReviewView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.xs)
+    }
+
+    // MARK: - Wins Card
+    @ViewBuilder
+    private var winsCard: some View {
+        let wins = InsightsEngine.generateMonthlyWins(logs: monthlyLogs, weeklyMetrics: Array(weeklyMetrics))
+        if !wins.isEmpty {
+            AppCard {
+                VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                    Text("🏆 This Month's Wins")
+                        .font(AppFonts.headline)
+                        .foregroundColor(.appText)
+
+                    Divider()
+
+                    ForEach(wins, id: \.self) { win in
+                        HStack(alignment: .top, spacing: AppSpacing.sm) {
+                            Text("•")
+                                .font(AppFonts.body)
+                                .foregroundColor(.appAccent)
+                            Text(win)
+                                .font(AppFonts.body)
+                                .foregroundColor(.appText)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Focus Card
+    @ViewBuilder
+    private var focusCard: some View {
+        let focus = InsightsEngine.generateFocusAreas(logs: monthlyLogs, settings: settings)
+        if !focus.isEmpty {
+            AppCard {
+                VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                    Text("🎯 Suggested Focus")
+                        .font(AppFonts.headline)
+                        .foregroundColor(.appText)
+
+                    Divider()
+
+                    ForEach(focus, id: \.self) { area in
+                        HStack(alignment: .top, spacing: AppSpacing.sm) {
+                            Text("→")
+                                .font(AppFonts.body)
+                                .foregroundColor(.appAccent)
+                            Text(area)
+                                .font(AppFonts.body)
+                                .foregroundColor(.appText)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Reflection Card

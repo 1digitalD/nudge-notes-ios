@@ -78,6 +78,10 @@
 		F7B87CB2E919FEAACF851E5E /* PhotoLoggingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A254AA350ABF3468C51ED /* PhotoLoggingView.swift */; };
 		F85400F989A95B0EDE710E50 /* AppCheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04876EBAEDF43D86FE9661C /* AppCheckbox.swift */; };
 		F856FDFFFFE855A678BB7E3A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB4B8787C6B4E96E0D0034F1 /* LaunchScreen.storyboard */; };
+		1A2B3C4D5E6F7A8B9C0D1E2F /* InsightsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F2 /* InsightsData.swift */; };
+		2B3C4D5E6F7A8B9C0D1E2F3A /* InsightsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* InsightsEngine.swift */; };
+		3C4D5E6F7A8B9C0D1E2F3A4B /* WHRLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D4E5F6A7B8C9D0E1F2A3B4 /* WHRLineChart.swift */; };
+		4D5E6F7A8B9C0D1E2F3A4B5C /* InsightsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C9D0E1F2A3B4C5 /* InsightsTabView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +183,10 @@
 		EEDAE0100B4F5AC9B6C7FBA4 /* HabitEntryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEntryTests.swift; sourceTree = "<group>"; };
 		EFC9B9BBCB0030BED09ECAF9 /* SubscriptionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionStore.swift; sourceTree = "<group>"; };
 		FD9F1A4AE67A15A4E5AB91F6 /* TestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFixtures.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* InsightsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsData.swift; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* InsightsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsEngine.swift; sourceTree = "<group>"; };
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* WHRLineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHRLineChart.swift; sourceTree = "<group>"; };
+		D4E5F6A7B8C9D0E1F2A3B4C5 /* InsightsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsTabView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -192,6 +200,7 @@
 				B34B98A9109C5B55581DFC10 /* CollapsibleSegment.swift */,
 				6A19EBDA9E9197CFD4BF5386 /* IncrementalInput.swift */,
 				5669404B9C0C0A3D6DA96CC9 /* ProgressBar.swift */,
+				C3D4E5F6A7B8C9D0E1F2A3B4 /* WHRLineChart.swift */,
 			);
 			name = Components;
 			path = nudgeNotes/Components;
@@ -248,6 +257,7 @@
 				5DCE1BDE8BD290D220B44AC4 /* HistoryTabView.swift */,
 				6DA7A8241E2745B86870E7C9 /* HomeView.swift */,
 				43339A840B23947104468BAB /* InsightsView.swift */,
+				D4E5F6A7B8C9D0E1F2A3B4C5 /* InsightsTabView.swift */,
 				65C9A471C7C960E7EEC172D2 /* MealDetailView.swift */,
 				576E53F6FFE553A6DB42479E /* MonthlyReviewView.swift */,
 				64F7EAF2DA8442C32A660B59 /* OnboardingFlowView.swift */,
@@ -269,6 +279,7 @@
 				4ECE424828F750CDD8AF56C5 /* DailyLog.swift */,
 				549B5273387AD1C371328134 /* HabitEntry.swift */,
 				E330D1C6A7C4DC6A0DC35E62 /* HabitType.swift */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* InsightsData.swift */,
 				71CE0FAD722C9545A9DE5E1C /* MealLog.swift */,
 				4DE774E7C96588E993303905 /* MonthlyReview.swift */,
 				A22A1C9B475574BED1C579E0 /* MoodLog.swift */,
@@ -367,6 +378,7 @@
 			children = (
 				D599C5FF16145F7940C20A2D /* .gitkeep */,
 				68E209C7C7F507A131B17B5F /* HealthKitManager.swift */,
+				B2C3D4E5F6A7B8C9D0E1F2A3 /* InsightsEngine.swift */,
 				BA818DB497AB5D1775B71A9E /* PermissionManaging.swift */,
 				EA287F70485C34627913CAB7 /* SubscriptionService.swift */,
 			);
@@ -534,6 +546,10 @@
 				BD89E5F23F18499238CEEC61 /* HydrationSegmentView.swift in Sources */,
 				50DCE9894B73DE22F67A08AF /* IncrementalInput.swift in Sources */,
 				DFF75C2E527CEDFA3606CB70 /* InsightsView.swift in Sources */,
+				4D5E6F7A8B9C0D1E2F3A4B5C /* InsightsTabView.swift in Sources */,
+				1A2B3C4D5E6F7A8B9C0D1E2F /* InsightsData.swift in Sources */,
+				2B3C4D5E6F7A8B9C0D1E2F3A /* InsightsEngine.swift in Sources */,
+				3C4D5E6F7A8B9C0D1E2F3A4B /* WHRLineChart.swift in Sources */,
 				EAF349547E668F65B7AD7541 /* InsightsViewModel.swift in Sources */,
 				5DD8148C282E0FF14DEFC8A2 /* MealDetailView.swift in Sources */,
 				E936B1CF0F9CF109F1D1A781 /* MealLog.swift in Sources */,

@@ -35,14 +35,14 @@ struct HomeView: View {
                 Label("Home", systemImage: "house")
             }
 
+            InsightsTabView()
+                .tabItem {
+                    Label("Insights", systemImage: "chart.bar.fill")
+                }
+
             HistoryTabView(profile: profile)
                 .tabItem {
                     Label("History", systemImage: "calendar")
-                }
-
-            InsightsView(profile: profile)
-                .tabItem {
-                    Label("Insights", systemImage: "chart.xyaxis.line")
                 }
 
             SettingsView(profile: profile)
