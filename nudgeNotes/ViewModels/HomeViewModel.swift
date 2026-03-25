@@ -3,6 +3,7 @@ import Foundation
 struct HomeViewModel {
     let dailyLogs: [DailyLog]
     let whrEntries: [WHREntry]
+    var weeklyMetrics: [WeeklyMetrics] = []
 
     var loggedDaysCount: Int {
         Set(dailyLogs.map { Calendar.current.startOfDay(for: $0.date) }).count
@@ -15,10 +16,23 @@ struct HomeViewModel {
     }
 
     var latestWHRText: String {
-        guard let latest = whrEntries.sorted(by: { $0.date > $1.date }).first else {
-            return "--"
+        // Check both WHREntry and WeeklyMetrics for latest WHR
+        let whrFromEntries = whrEntries.sorted(by: { $0.date > $1.date }).first
+        let whrFromMetrics = weeklyMetrics.sorted(by: { $0.date > $1.date }).first(where: { $0.whr > 0 })
+
+        // Use whichever is more recent
+        if let entry = whrFromEntries, let metrics = whrFromMetrics {
+            if entry.date > metrics.date {
+                return String(format: "%.2f", entry.ratio)
+            } else {
+                return String(format: "%.2f", metrics.whr)
+            }
+        } else if let entry = whrFromEntries {
+            return String(format: "%.2f", entry.ratio)
+        } else if let metrics = whrFromMetrics {
+            return String(format: "%.2f", metrics.whr)
         }
-        return String(format: "%.2f", latest.ratio)
+        return "--"
     }
 
     var currentStreak: Int {
