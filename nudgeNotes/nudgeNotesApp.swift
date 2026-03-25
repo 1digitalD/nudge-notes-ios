@@ -19,6 +19,10 @@ struct NudgeNotesApp: App {
             PersistenceController.resetDatabase()
             defaults.set(true, forKey: "didResetForMonthlyReviewMigration")
         }
+        if !defaults.bool(forKey: "didResetForPhase4AMigration") {
+            PersistenceController.resetDatabase()
+            defaults.set(true, forKey: "didResetForPhase4AMigration")
+        }
         if ProcessInfo.processInfo.arguments.contains("-ui-testing-reset-store") {
             PersistenceController.resetPersistentStore()
         }

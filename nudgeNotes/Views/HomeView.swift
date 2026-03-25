@@ -7,6 +7,7 @@ struct HomeView: View {
     @State private var isPresentingCheckIn = false
     @State private var isPresentingWHR = false
     @State private var isPresentingPhotoLog = false
+    @State private var isPresentingWeeklyWeighIn = false
 
     var body: some View {
         TabView {
@@ -15,7 +16,8 @@ struct HomeView: View {
                 selectedDate: $selectedDate,
                 isPresentingCheckIn: $isPresentingCheckIn,
                 isPresentingWHR: $isPresentingWHR,
-                isPresentingPhotoLog: $isPresentingPhotoLog
+                isPresentingPhotoLog: $isPresentingPhotoLog,
+                isPresentingWeeklyWeighIn: $isPresentingWeeklyWeighIn
             )
             .sheet(isPresented: $isPresentingCheckIn) {
                 DailyCheckInView(date: selectedDate)
@@ -25,6 +27,9 @@ struct HomeView: View {
             }
             .sheet(isPresented: $isPresentingPhotoLog) {
                 PhotoLoggingView(date: selectedDate)
+            }
+            .sheet(isPresented: $isPresentingWeeklyWeighIn) {
+                WeeklyWeighInView(date: selectedDate)
             }
             .tabItem {
                 Label("Home", systemImage: "house")
@@ -57,6 +62,7 @@ private struct HomeDashboardView: View {
     @Binding var isPresentingCheckIn: Bool
     @Binding var isPresentingWHR: Bool
     @Binding var isPresentingPhotoLog: Bool
+    @Binding var isPresentingWeeklyWeighIn: Bool
 
     @Query(sort: \DailyLog.date, order: .reverse) private var dailyLogs: [DailyLog]
     @Query(sort: \WHREntry.date, order: .reverse) private var whrEntries: [WHREntry]
@@ -176,14 +182,23 @@ private struct HomeDashboardView: View {
 
                     // MARK: Quick Actions
                     HStack(spacing: AppSpacing.sm) {
+                        AppButton("Weekly Weigh-In", variant: .secondary) {
+                            isPresentingWeeklyWeighIn = true
+                        }
+                        .accessibilityIdentifier("weekly-weighin-button")
+
+                        AppButton("Photos", variant: .secondary) {
+                            isPresentingPhotoLog = true
+                        }
+                    }
+
+                    HStack(spacing: AppSpacing.sm) {
                         AppButton("WHR", variant: .secondary) {
                             isPresentingWHR = true
                         }
                         .accessibilityIdentifier("whr-calculator-button")
 
-                        AppButton("Photos", variant: .secondary) {
-                            isPresentingPhotoLog = true
-                        }
+                        Spacer()
                     }
 
                 }

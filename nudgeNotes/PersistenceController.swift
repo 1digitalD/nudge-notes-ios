@@ -15,7 +15,8 @@ enum PersistenceController {
             MonthlyReview.self,
             WaterLog.self,
             WorkoutLog.self,
-            MoodLog.self
+            MoodLog.self,
+            WeeklyMetrics.self
         ])
 
         let configuration: ModelConfiguration

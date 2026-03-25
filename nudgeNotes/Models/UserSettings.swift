@@ -24,12 +24,26 @@ enum SegmentType: String, Codable, CaseIterable, Identifiable {
 /// App-wide user settings stored in UserDefaults
 @Observable
 final class UserSettings {
-    // Goals
+    // Goal toggles
+    var waterGoalEnabled: Bool {
+        didSet { UserDefaults.standard.set(waterGoalEnabled, forKey: "waterGoalEnabled") }
+    }
+    var stepGoalEnabled: Bool {
+        didSet { UserDefaults.standard.set(stepGoalEnabled, forKey: "stepGoalEnabled") }
+    }
+    var sleepGoalEnabled: Bool {
+        didSet { UserDefaults.standard.set(sleepGoalEnabled, forKey: "sleepGoalEnabled") }
+    }
+
+    // Goal values
     var waterGoalGlasses: Int {
         didSet { UserDefaults.standard.set(waterGoalGlasses, forKey: "waterGoalGlasses") }
     }
     var stepGoal: Int {
         didSet { UserDefaults.standard.set(stepGoal, forKey: "stepGoal") }
+    }
+    var sleepGoalHours: Double {
+        didSet { UserDefaults.standard.set(sleepGoalHours, forKey: "sleepGoalHours") }
     }
 
     // Preferences
@@ -58,8 +72,12 @@ final class UserSettings {
 
     init() {
         let defaults = UserDefaults.standard
+        waterGoalEnabled = defaults.object(forKey: "waterGoalEnabled") as? Bool ?? true
+        stepGoalEnabled = defaults.object(forKey: "stepGoalEnabled") as? Bool ?? true
+        sleepGoalEnabled = defaults.object(forKey: "sleepGoalEnabled") as? Bool ?? true
         waterGoalGlasses = defaults.object(forKey: "waterGoalGlasses") as? Int ?? 8
-        stepGoal = defaults.object(forKey: "stepGoal") as? Int ?? 10_000
+        stepGoal = defaults.object(forKey: "stepGoal") as? Int ?? 8000
+        sleepGoalHours = defaults.object(forKey: "sleepGoalHours") as? Double ?? 8.0
         waterUnit = WaterUnit(rawValue: defaults.string(forKey: "waterUnit") ?? "") ?? .glasses
         waterQuickPreset = defaults.object(forKey: "waterQuickPreset") as? Double ?? 1.0
         stepQuickPreset = defaults.object(forKey: "stepQuickPreset") as? Int ?? 500

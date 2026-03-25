@@ -10,16 +10,19 @@ struct DailyCheckInView: View {
     let existingLog: DailyLog?
 
     @State private var settings = UserSettings()
+    @StateObject private var healthKit = HealthKitManager.shared
     @State private var saveTask: Task<Void, Never>?
     @State private var savedIndicator = false
     @State private var dailyLog: DailyLog?
 
     // Text state for numeric fields (loaded once from model)
-    @State private var weightText = ""
-    @State private var waistText = ""
-    @State private var hipsText = ""
     @State private var stepsText = ""
     @State private var metricsLoaded = false
+    @State private var showManualStepEntry = false
+    @State private var manualStepsText = ""
+
+    // Meal note focus
+    @State private var focusedMealID: UUID?
 
     init(date: Date, existingLog: DailyLog? = nil) {
         self.date = date
@@ -32,11 +35,11 @@ struct DailyCheckInView: View {
                 if let log = dailyLog {
                     ScrollView {
                         VStack(spacing: AppSpacing.md) {
+                            sleepSection(log: log)
                             waterSection(log: log)
                             movementSection(log: log)
                             mealsSection(log: log)
                             moodSection(log: log)
-                            bodyMetricsSection(log: log)
                             notesSection(log: log)
                         }
                         .padding(.horizontal, AppSpacing.md)
@@ -69,8 +72,106 @@ struct DailyCheckInView: View {
                     }
                 }
             }
+            .alert("Manual Steps", isPresented: $showManualStepEntry) {
+                TextField("Steps", text: $manualStepsText)
+                    .keyboardType(.numberPad)
+                Button("Save") {
+                    if let steps = Int(manualStepsText), let log = dailyLog {
+                        log.steps = steps
+                        scheduleAutoSave()
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Override the auto-synced step count")
+            }
         }
-        .onAppear { loadOrCreateLog() }
+        .onAppear {
+            loadOrCreateLog()
+            if healthKit.isAuthorized {
+                Task { await healthKit.fetchTodayData() }
+            }
+        }
+    }
+
+    // MARK: - Sleep Section
+
+    @ViewBuilder
+    private func sleepSection(log: DailyLog) -> some View {
+        AppCard {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                Text("Sleep Last Night")
+                    .font(AppFonts.headline)
+                    .foregroundStyle(Color.appText)
+
+                // Quick hour picker
+                HStack(spacing: AppSpacing.sm) {
+                    ForEach([5, 6, 7, 8, 9, 10], id: \.self) { hours in
+                        Button {
+                            log.sleepHours = Double(hours)
+                            scheduleAutoSave()
+                        } label: {
+                            Text("\(hours)h")
+                                .font(AppFonts.body)
+                                .foregroundStyle(log.sleepHours == Double(hours) ? Color.white : Color.appText)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, AppSpacing.sm)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(log.sleepHours == Double(hours) ? Color.appAccent : Color.appCard)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.appBorder, lineWidth: 1)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                // Optional quality (5 stars)
+                if log.sleepHours != nil {
+                    Divider()
+                        .foregroundStyle(Color.appBorder)
+
+                    HStack {
+                        Text("Quality (optional)")
+                            .font(AppFonts.caption)
+                            .foregroundStyle(Color.appTextSecondary)
+
+                        Spacer()
+
+                        ForEach(1...5, id: \.self) { star in
+                            Button {
+                                log.sleepQuality = (log.sleepQuality == star) ? nil : star
+                                scheduleAutoSave()
+                            } label: {
+                                Image(systemName: (log.sleepQuality ?? 0) >= star ? "star.fill" : "star")
+                                    .foregroundStyle(Color.appAccent)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+
+                // Show goal if set
+                if settings.sleepGoalEnabled, let actual = log.sleepHours {
+                    let goal = settings.sleepGoalHours
+                    HStack {
+                        if actual >= goal {
+                            Text("Goal reached!")
+                                .font(AppFonts.captionEmphasized)
+                                .foregroundStyle(Color.appAccent)
+                        } else {
+                            Text("\(Int(goal - actual))h short of \(Int(goal))h goal")
+                                .font(AppFonts.caption)
+                                .foregroundStyle(Color.appTextSecondary)
+                        }
+                        Spacer()
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Water Section
@@ -91,12 +192,10 @@ struct DailyCheckInView: View {
                         Button {
                             let sorted = log.waterLogs.sorted { $0.timestamp < $1.timestamp }
                             if index < filled {
-                                // Tap filled → remove last entry
                                 if let last = sorted.last {
                                     log.waterLogs.removeAll { $0.id == last.id }
                                 }
                             } else {
-                                // Tap empty → add one glass
                                 let entry = WaterLog(amount: 1.0, unit: .glasses, dailyLog: log)
                                 log.waterLogs.append(entry)
                             }
@@ -118,7 +217,7 @@ struct DailyCheckInView: View {
                         .font(AppFonts.caption)
                         .foregroundStyle(Color.appTextSecondary)
                     Spacer()
-                    if filled >= goal {
+                    if settings.waterGoalEnabled && filled >= goal {
                         Text("Goal reached!")
                             .font(AppFonts.captionEmphasized)
                             .foregroundStyle(Color.appAccent)
@@ -138,32 +237,75 @@ struct DailyCheckInView: View {
                     .font(AppFonts.headline)
                     .foregroundStyle(Color.appText)
 
-                HStack(spacing: AppSpacing.lg) {
-                    movementCheckbox(log: log, typeName: "Walking", label: "Walked")
-                    movementCheckbox(log: log, typeName: "Weights", label: "Gym")
-                    movementCheckbox(log: log, typeName: "Yoga", label: "Yoga")
+                // Steps (HealthKit or manual)
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        if healthKit.isAuthorized {
+                            let displaySteps = log.steps ?? healthKit.todaySteps
+                            Text("\(displaySteps) steps")
+                                .font(AppFonts.headline)
+                                .foregroundStyle(Color.appText)
+                            Text(log.steps != nil ? "Manual override" : "Auto-synced from Health")
+                                .font(AppFonts.caption)
+                                .foregroundStyle(Color.appTextSecondary)
+                        } else {
+                            Text("Steps")
+                                .font(AppFonts.body)
+                                .foregroundStyle(Color.appText)
+                            TextField("0", text: $stepsText)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.leading)
+                                .font(AppFonts.headline)
+                                .foregroundStyle(Color.appText)
+                                .onChange(of: stepsText) { _, val in
+                                    log.steps = Int(val)
+                                    scheduleAutoSave()
+                                }
+                                .accessibilityLabel("Steps count")
+                        }
+                    }
+
                     Spacer()
+
+                    // Goal progress
+                    if settings.stepGoalEnabled {
+                        let steps = healthKit.isAuthorized
+                            ? (log.steps ?? healthKit.todaySteps)
+                            : (log.steps ?? 0)
+                        let progress = min(Double(steps) / Double(settings.stepGoal), 1.0)
+
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text("\(Int(progress * 100))%")
+                                .font(AppFonts.captionEmphasized)
+                                .foregroundStyle(Color.appAccent)
+
+                            ProgressView(value: progress)
+                                .tint(Color.appAccent)
+                                .frame(width: 80)
+                        }
+                    }
+
+                    // Manual override button
+                    if healthKit.isAuthorized {
+                        Button {
+                            manualStepsText = log.steps.map { "\($0)" } ?? ""
+                            showManualStepEntry = true
+                        } label: {
+                            Image(systemName: "pencil.circle")
+                                .foregroundStyle(Color.appTextSecondary)
+                        }
+                    }
                 }
 
                 Divider()
                     .foregroundStyle(Color.appBorder)
 
-                HStack(spacing: AppSpacing.sm) {
-                    Text("Steps")
-                        .font(AppFonts.body)
-                        .foregroundStyle(Color.appText)
+                // Activity checkboxes
+                HStack(spacing: AppSpacing.lg) {
+                    movementCheckbox(log: log, typeName: "Walking", label: "Walked")
+                    movementCheckbox(log: log, typeName: "Weights", label: "Gym")
+                    movementCheckbox(log: log, typeName: "Yoga", label: "Yoga")
                     Spacer()
-                    TextField("0", text: $stepsText)
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.trailing)
-                        .frame(width: 90)
-                        .font(AppFonts.bodyEmphasized)
-                        .foregroundStyle(Color.appText)
-                        .onChange(of: stepsText) { _, val in
-                            log.steps = Int(val)
-                            scheduleAutoSave()
-                        }
-                        .accessibilityLabel("Steps count")
                 }
             }
         }
@@ -225,37 +367,118 @@ struct DailyCheckInView: View {
 
     @ViewBuilder
     private func mealRow(log: DailyLog, mealType: MealType) -> some View {
-        let isLogged = log.meals.contains { $0.mealType == mealType }
         let mealLog = log.meals.first { $0.mealType == mealType }
+        let isLogged = mealLog != nil
 
-        HStack(spacing: AppSpacing.sm) {
-            AppCheckbox(
-                isChecked: Binding(
-                    get: { isLogged },
-                    set: { checked in
-                        if checked {
-                            let meal = MealLog(
-                                timestamp: Date(),
-                                mealType: mealType,
-                                dailyLog: log
-                            )
-                            log.meals.append(meal)
-                        } else {
-                            log.meals.removeAll { $0.mealType == mealType }
-                        }
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            // Header row
+            HStack {
+                Text(mealType.rawValue)
+                    .font(AppFonts.bodyEmphasized)
+                    .foregroundStyle(Color.appText)
+
+                Spacer()
+
+                if !isLogged {
+                    Button {
+                        let meal = MealLog(
+                            timestamp: Date(),
+                            mealType: mealType,
+                            dailyLog: log
+                        )
+                        log.meals.append(meal)
                         scheduleAutoSave()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Log")
+                        }
+                        .font(AppFonts.caption)
+                        .foregroundStyle(Color.appAccent)
                     }
-                ),
-                label: mealType.rawValue
-            )
+                    .buttonStyle(.plain)
+                } else {
+                    Button {
+                        log.meals.removeAll { $0.mealType == mealType }
+                        scheduleAutoSave()
+                    } label: {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(Color.appAccent)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
 
-            Spacer()
+            // Expanded details when logged
+            if let meal = mealLog {
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    // Meal quality selector
+                    HStack(spacing: AppSpacing.xs) {
+                        ForEach(MealQuality.allCases, id: \.self) { type in
+                            mealQualityButton(meal: meal, type: type)
+                        }
+                    }
 
-            if isLogged, let meal = mealLog {
-                MealPhotoButton(meal: meal, onChanged: scheduleAutoSave)
+                    // Photo + note
+                    HStack(spacing: AppSpacing.sm) {
+                        MealPhotoButton(meal: meal, onChanged: scheduleAutoSave)
+
+                        if meal.notes == nil || meal.notes?.isEmpty == true {
+                            Button {
+                                focusedMealID = meal.id
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "text.bubble")
+                                    Text("Add note")
+                                }
+                                .font(AppFonts.caption)
+                                .foregroundStyle(Color.appTextSecondary)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+
+                    // Note text field
+                    if focusedMealID == meal.id || (meal.notes != nil && !(meal.notes?.isEmpty ?? true)) {
+                        TextField("Quick note (optional)", text: Binding(
+                            get: { meal.notes ?? "" },
+                            set: { meal.notes = $0.isEmpty ? nil : $0 }
+                        ))
+                        .font(AppFonts.caption)
+                        .textFieldStyle(.roundedBorder)
+                        .onChange(of: meal.notes) { _, _ in scheduleAutoSave() }
+                    }
+                }
+                .padding(.top, AppSpacing.xs)
             }
         }
-        .padding(.vertical, AppSpacing.xs)
+        .padding(.vertical, AppSpacing.sm)
+    }
+
+    @ViewBuilder
+    private func mealQualityButton(meal: MealLog, type: MealQuality) -> some View {
+        Button {
+            meal.quality = (meal.quality == type) ? nil : type
+            scheduleAutoSave()
+        } label: {
+            HStack(spacing: 4) {
+                Text(type.icon)
+                Text(type.shortLabel)
+                    .font(AppFonts.caption)
+            }
+            .foregroundStyle(meal.quality == type ? Color.white : Color.appText)
+            .padding(.horizontal, AppSpacing.sm)
+            .padding(.vertical, AppSpacing.xs)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(meal.quality == type ? Color.appAccent : Color.appCard)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.appBorder, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Mood Section
@@ -304,85 +527,6 @@ struct DailyCheckInView: View {
         }
     }
 
-    // MARK: - Body Metrics Section
-
-    @ViewBuilder
-    private func bodyMetricsSection(log: DailyLog) -> some View {
-        AppCard {
-            VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                Text("Body Metrics")
-                    .font(AppFonts.headline)
-                    .foregroundStyle(Color.appText)
-
-                metricRow(label: "Weight (lbs)", placeholder: "—", text: $weightText) {
-                    log.weight = Double(weightText)
-                    scheduleAutoSave()
-                }
-
-                Divider().foregroundStyle(Color.appBorder)
-
-                metricRow(label: "Waist (in)", placeholder: "—", text: $waistText) {
-                    log.waist = Double(waistText)
-                    scheduleAutoSave()
-                }
-
-                Divider().foregroundStyle(Color.appBorder)
-
-                metricRow(label: "Hips (in)", placeholder: "—", text: $hipsText) {
-                    log.hips = Double(hipsText)
-                    scheduleAutoSave()
-                }
-
-                if let waist = log.waist, let hips = log.hips, hips > 0 {
-                    let whr = waist / hips
-                    Divider().foregroundStyle(Color.appBorder)
-                    HStack {
-                        Text("WHR (auto)")
-                            .font(AppFonts.caption)
-                            .foregroundStyle(Color.appTextSecondary)
-                        Spacer()
-                        Text(String(format: "%.2f", whr))
-                            .font(AppFonts.captionEmphasized)
-                            .foregroundStyle(whrColor(whr))
-                        Text("·")
-                            .font(AppFonts.footnote)
-                            .foregroundStyle(Color.appTextSecondary)
-                        Text(whrCategory(whr))
-                            .font(AppFonts.footnote)
-                            .foregroundStyle(whrColor(whr))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(whrColor(whr).opacity(0.12))
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                    }
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func metricRow(
-        label: String,
-        placeholder: String,
-        text: Binding<String>,
-        onCommit: @escaping () -> Void
-    ) -> some View {
-        HStack {
-            Text(label)
-                .font(AppFonts.body)
-                .foregroundStyle(Color.appText)
-            Spacer()
-            TextField(placeholder, text: text)
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .frame(width: 80)
-                .font(AppFonts.bodyEmphasized)
-                .foregroundStyle(Color.appText)
-                .onSubmit(onCommit)
-                .onChange(of: text.wrappedValue) { _, _ in onCommit() }
-        }
-    }
-
     // MARK: - Notes Section
 
     @ViewBuilder
@@ -428,18 +572,6 @@ struct DailyCheckInView: View {
         return "Fasting: \(fHours)h \(fMinutes)m (auto)"
     }
 
-    private func whrColor(_ ratio: Double) -> Color {
-        if ratio < 0.80 { return Color(hex: "#4CAF50") }
-        if ratio < 0.85 { return Color(hex: "#FF9800") }
-        return Color(hex: "#F44336")
-    }
-
-    private func whrCategory(_ ratio: Double) -> String {
-        if ratio < 0.80 { return "Healthy" }
-        if ratio < 0.85 { return "Moderate" }
-        return "High"
-    }
-
     private var navigationTitle: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, MMM d"
@@ -475,14 +607,7 @@ struct DailyCheckInView: View {
     private func loadTextFields(from log: DailyLog) {
         guard !metricsLoaded else { return }
         metricsLoaded = true
-        if let w = log.weight { weightText = formatDouble(w) }
-        if let w = log.waist { waistText = formatDouble(w) }
-        if let h = log.hips { hipsText = formatDouble(h) }
         if let s = log.steps { stepsText = "\(s)" }
-    }
-
-    private func formatDouble(_ v: Double) -> String {
-        v == v.rounded() ? String(Int(v)) : String(format: "%.1f", v)
     }
 
     // MARK: - Auto-Save (debounced 1s)

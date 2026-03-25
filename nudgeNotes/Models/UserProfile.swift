@@ -9,18 +9,32 @@ final class UserProfile {
     var createdAt: Date
     private var goalsStorage: String?
 
+    // Profile fields for onboarding
+    var name: String?
+    var weight: Double?
+    var heightFeet: Int?
+    var heightInches: Int?
+
     init(
         id: UUID = UUID(),
         onboardingCompleted: Bool = false,
         isPro: Bool = false,
         createdAt: Date = .now,
-        goals: [String] = []
+        goals: [String] = [],
+        name: String? = nil,
+        weight: Double? = nil,
+        heightFeet: Int? = nil,
+        heightInches: Int? = nil
     ) {
         self.id = id
         self.onboardingCompleted = onboardingCompleted
         self.isPro = isPro
         self.createdAt = createdAt
         self.goalsStorage = goals.joined(separator: "|")
+        self.name = name
+        self.weight = weight
+        self.heightFeet = heightFeet
+        self.heightInches = heightInches
     }
 
     var goals: [String] {

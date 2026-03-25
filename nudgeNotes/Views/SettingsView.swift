@@ -16,10 +16,6 @@ struct SettingsView: View {
     @State private var nameText: String = UserDefaults.standard.string(forKey: "userName") ?? ""
     @State private var heightText: String = UserDefaults.standard.string(forKey: "userHeight") ?? ""
 
-    // Goals as text (initialized from settings)
-    @State private var waterGoalText = ""
-    @State private var stepGoalText = ""
-
     init(profile: UserProfile) {
         self.profile = profile
         _subscriptionStore = State(initialValue: SubscriptionStore(profile: profile))
@@ -34,8 +30,8 @@ struct SettingsView: View {
             ScrollView {
                 VStack(spacing: AppSpacing.sectionSpacing) {
                     profileSection
+                    dailyGoalsSection
                     preferencesSection
-                    goalsSection
                     dataPrivacySection
                     supportSection
                 }
@@ -55,8 +51,6 @@ struct SettingsView: View {
                 Text("This will permanently delete all your logs and cannot be undone.")
             }
             .task {
-                waterGoalText = "\(settings.waterGoalGlasses)"
-                stepGoalText = "\(settings.stepGoal)"
                 await subscriptionStore.loadProducts(modelContext: modelContext)
             }
         }
@@ -105,7 +99,118 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Section 2: Preferences
+    // MARK: - Section 2: Daily Goals
+    private var dailyGoalsSection: some View {
+        AppCard {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                Text("Daily Goals")
+                    .font(AppFonts.headline)
+                    .foregroundColor(.appText)
+
+                Divider()
+
+                // Water goal
+                Toggle(isOn: $settings.waterGoalEnabled) {
+                    HStack {
+                        Text("Water")
+                            .font(AppFonts.body)
+                            .foregroundColor(.appText)
+                        Spacer()
+                        if settings.waterGoalEnabled {
+                            Text("\(settings.waterGoalGlasses) glasses")
+                                .font(AppFonts.caption)
+                                .foregroundColor(.appTextSecondary)
+                        }
+                    }
+                }
+                .tint(.appAccent)
+
+                if settings.waterGoalEnabled {
+                    Slider(
+                        value: Binding(
+                            get: { Double(settings.waterGoalGlasses) },
+                            set: { settings.waterGoalGlasses = Int($0) }
+                        ),
+                        in: 4...16,
+                        step: 1
+                    )
+                    .tint(.appAccent)
+                }
+
+                Divider()
+
+                // Steps goal
+                Toggle(isOn: $settings.stepGoalEnabled) {
+                    HStack {
+                        Text("Steps")
+                            .font(AppFonts.body)
+                            .foregroundColor(.appText)
+                        Spacer()
+                        if settings.stepGoalEnabled {
+                            Text("\(settings.stepGoal.formatted()) steps")
+                                .font(AppFonts.caption)
+                                .foregroundColor(.appTextSecondary)
+                        }
+                    }
+                }
+                .tint(.appAccent)
+
+                if settings.stepGoalEnabled {
+                    HStack(spacing: AppSpacing.sm) {
+                        ForEach([6000, 8000, 10000, 12000], id: \.self) { goal in
+                            Button {
+                                settings.stepGoal = goal
+                            } label: {
+                                Text("\(goal / 1000)k")
+                                    .font(AppFonts.caption)
+                                    .foregroundColor(settings.stepGoal == goal ? .white : .appText)
+                                    .padding(.horizontal, AppSpacing.sm)
+                                    .padding(.vertical, AppSpacing.xs)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .fill(settings.stepGoal == goal ? Color.appAccent : Color.clear)
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(Color.appBorder, lineWidth: 1)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+
+                Divider()
+
+                // Sleep goal
+                Toggle(isOn: $settings.sleepGoalEnabled) {
+                    HStack {
+                        Text("Sleep")
+                            .font(AppFonts.body)
+                            .foregroundColor(.appText)
+                        Spacer()
+                        if settings.sleepGoalEnabled {
+                            Text("\(Int(settings.sleepGoalHours))h")
+                                .font(AppFonts.caption)
+                                .foregroundColor(.appTextSecondary)
+                        }
+                    }
+                }
+                .tint(.appAccent)
+
+                if settings.sleepGoalEnabled {
+                    Slider(
+                        value: $settings.sleepGoalHours,
+                        in: 5...10,
+                        step: 0.5
+                    )
+                    .tint(.appAccent)
+                }
+            }
+        }
+    }
+
+    // MARK: - Section 3: Preferences
     private var preferencesSection: some View {
         AppCard {
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
@@ -157,39 +262,6 @@ struct SettingsView: View {
                     ))
                     .tint(.appAccent)
                     .labelsHidden()
-                }
-            }
-        }
-    }
-
-    // MARK: - Section 3: Goals
-    private var goalsSection: some View {
-        AppCard {
-            VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                Text("Goals")
-                    .font(AppFonts.headline)
-                    .foregroundColor(.appText)
-
-                Divider()
-
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                    Text("Daily Water Goal (glasses)")
-                        .font(AppFonts.footnote)
-                        .foregroundColor(.appTextSecondary)
-                    AppTextField(placeholder: "8", text: $waterGoalText, keyboardType: .numberPad)
-                        .onChange(of: waterGoalText) { _, val in
-                            if let n = Int(val) { settings.waterGoalGlasses = n }
-                        }
-                }
-
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                    Text("Daily Step Goal")
-                        .font(AppFonts.footnote)
-                        .foregroundColor(.appTextSecondary)
-                    AppTextField(placeholder: "10000", text: $stepGoalText, keyboardType: .numberPad)
-                        .onChange(of: stepGoalText) { _, val in
-                            if let n = Int(val) { settings.stepGoal = n }
-                        }
                 }
             }
         }
@@ -346,6 +418,7 @@ struct SettingsView: View {
     private func deleteAllData() {
         try? modelContext.delete(model: DailyLog.self)
         try? modelContext.delete(model: MonthlyReview.self)
+        try? modelContext.delete(model: WeeklyMetrics.self)
         try? modelContext.save()
     }
 }
