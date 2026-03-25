@@ -1,8 +1,10 @@
 import SwiftUI
+import UIKit
 
 enum AppButtonVariant {
     case primary
     case secondary
+    case glass
 }
 
 struct AppButton: View {
@@ -17,21 +19,59 @@ struct AppButton: View {
     }
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
+            action()
+        } label: {
             Text(title)
                 .font(AppFonts.bodyEmphasized)
-                .foregroundColor(variant == .primary ? .white : .appAccent)
+                .foregroundStyle(foregroundColor)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, AppSpacing.md)
-                .background(
-                    RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous)
-                        .fill(variant == .primary ? Color.appAccent : Color.clear)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous)
-                        .stroke(variant == .secondary ? Color.appAccent : Color.clear, lineWidth: 1.5)
-                )
+                .background(background)
+                .clipShape(RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous))
         }
         .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private var background: some View {
+        switch variant {
+        case .primary:
+            RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous)
+                .fill(Color.appAccent)
+
+        case .secondary:
+            RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous)
+                .fill(Color.clear)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous)
+                        .stroke(Color.appAccent, lineWidth: 1.5)
+                )
+
+        case .glass:
+            ZStack {
+                RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                RoundedRectangle(cornerRadius: AppSpacing.cornerRadius, style: .continuous)
+                    .stroke(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.3), Color.clear],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            }
+        }
+    }
+
+    private var foregroundColor: Color {
+        switch variant {
+        case .primary: return .white
+        case .secondary: return .appAccent
+        case .glass: return .appText
+        }
     }
 }
